@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kargo Dağıtım</title>
+  <link rel="stylesheet" href="styles.css">
+  
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="CargoStatus.html">Kargo Durum</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <div class="card">
+    <h1 class="simpleHeader" style="display: block">Kargo Dağıtılacaklar</h1>
+  
+    <div class="input-group">
+      <input type="text" id="itemInput" class="primaryInput" placeholder="Enter item...">
+      <button class="primaryButton" onclick="addItem()">Add</button>
+    </div>
+
+    <ul id="itemList"></ul>
+  </div>
+  </main>
+  
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+  
+
+  <script>
+    function addItem() {
+      const input = document.getElementById("itemInput");
+      const text = input.value.trim();
+      if (text === "") return;
+
+      const li = document.createElement("li");
+      
+      //span for all li content
+      const front = document.createElement("span");
+      front.className = "centered";
+      
+      //text infos
+      const label = document.createElement("h3");
+      label.textContent = text;
+      label.className = "cargoLabel";
+      
+      //span for text and extend button
+      const upper = document.createElement("span");
+      upper.className = "infoBox";
+      upper.appendChild(label);
+      
+      
+      
+      //span for details 
+      const details = document.createElement("span");
+      details.className = "infocard";
+      
+      //span for text
+      const textSpan = document.createElement("span");
+      textSpan.className = "infocard";
+      
+      //text for details
+      const info = document.createElement("p");
+      info.className = "simpleLabel";
+      info.textContent = "Kargo Detayları";
+      //text for details
+      const info2 = document.createElement("p");
+      info2.textContent = "Kargo Detayları alt başlık";
+      
+      textSpan.appendChild(info);
+      textSpan.appendChild(info2);
+      
+      
+      
+      //spans for delivering buttons
+      const buttons = document.createElement("span");
+      
+      //button for delivering
+      const deliverButton = document.createElement("button");
+      deliverButton.className = "acceptButton";
+      deliverButton.textContent = "Teslim Edildi";
+      deliverButton.onclick = () => li.remove();
+      const notDeliverButton = document.createElement("button");
+      notDeliverButton.className = "declineButton";
+      notDeliverButton.textContent = "Teslim Edilemedi";
+      notDeliverButton.onclick = () => li.remove();
+      
+      buttons.appendChild(deliverButton);
+      buttons.appendChild(notDeliverButton);
+      
+      details.appendChild(textSpan);
+      details.appendChild(buttons);
+      
+      front.appendChild(upper);
+
+      const expandButton = document.createElement("button");
+      upper.appendChild(expandButton);
+      expandButton.className = "primaryButton";
+      expandButton.textContent = "\\/";
+      expandButton.onclick = () => {
+        front.appendChild(details);
+        upper.replaceChild(collapseButton, expandButton);
+      };
+      
+      
+      
+      const collapseButton = document.createElement("button");
+      collapseButton.className = "primaryButton";
+      collapseButton.textContent = "/\\";
+      collapseButton.onclick = () => {
+        front.removeChild(details);
+        upper.replaceChild(expandButton, collapseButton);
+      };
+      
+      
+      
+      
+      li.appendChild(front);
+      
+      document.getElementById("itemList").appendChild(li);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>

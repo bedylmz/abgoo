@@ -1,0 +1,332 @@
+:root {
+  --bg: #1e1e2f;
+  --card: #2c2c3e;
+  --incard: #4c4c71;
+  --primary: #ff8102;
+  --primarylight: #ffa944;
+  --primaryfaded: #d66c00;
+  --text: #f5f5f5;
+  --textBackground: #444557;
+  --muted: #a0a0b0;
+  --error: #f44336;
+  --correct: #07ce3d;
+  --radius: 12px;
+  --stdpadding: 0.75rem;
+  --stdfontsize: 1rem;
+
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px); /* Adjust based on header/footer height */
+  padding: 3em;
+  box-sizing: border-box;
+}
+
+header {
+  background-color: var(--bg);
+  color: white;
+  padding: 1em;
+  text-align: center;
+}
+nav {
+  background-color: var(--bg);
+  padding: 0.5em;
+  text-align: center;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+}
+
+footer {
+  background-color: var(--bg);
+  color: white;
+  text-align: center;
+  padding: 1em;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.card {
+  background-color: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 125%;
+  max-width: 400px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardflex {
+  background-color: var(--incard);
+  padding: 2rem;
+  border-radius: var(--radius);
+  font-size: large;
+  min-width: 250px;
+  min-height: 75px;
+  text-align: center;
+  justify-content: center;
+  margin: 2%;
+}
+
+.infocard {
+  background-color: var(--incard);
+  border-radius: var(--radius);
+}
+
+.infoBox {
+  display: flex;
+}
+
+.centered{
+  align-content: center;
+  width: 100%;
+  display: table
+}
+
+.result {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--textBackground);
+  border-radius: var(--radius);
+  text-align: left;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.simpleLabel{
+  font-size: var(--stdfontsize);
+  font-weight: bold;
+  color: var(--primarylight);
+}
+
+.cargoLabel{
+  font-size: 1.35rem;
+  font-weight: bold;
+  color: var(--primarylight);
+  width: 100%;
+  display: block;
+}
+
+.middleLabel{
+  font-size: 1.5em;
+  font-weight: bold;
+  font-style: italic;
+  color: var(--primarylight);
+}
+
+.simpleHeader{
+  font-size: 2em;
+  text-align: center;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.result.error {
+  background-color: #3b2c2c;
+  color: var(--error);
+}
+
+.selectRoundedBlack{
+  width: 100%;
+  padding: var(--stdpadding);
+  font-size: 1em;
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  background: var(--textBackground);
+  color: var(--text);
+  outline: none;
+  display: block;
+}
+
+.leftAlignForm{
+  text-align: left;
+  justify-content: center;
+  align-items: center;
+  line-height: 2;
+}
+
+.primaryButton{
+  padding: var(--stdpadding);
+  font-size: var(--stdfontsize);
+  background-color: var(--primary);
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.primaryButton:hover {
+  background-color: var(--primaryfaded);
+}
+
+.secondaryButton{
+  padding: var(--stdpadding);
+  font-size: var(--stdfontsize);
+  background-color: darkturquoise;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.secondaryButton:hover {
+  background-color: #03a5a7;
+}
+
+.acceptButton{
+  padding: var(--stdpadding);
+  font-size: var(--stdfontsize);
+  background-color: #12fc00;
+  color: forestgreen;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.acceptButton:hover {
+  background-color: forestgreen;
+  color: lightgrey;
+}
+
+.declineButton{
+  padding: var(--stdpadding);
+  font-size: var(--stdfontsize);
+  background-color: #fa3027;
+  color: #951818;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.declineButton:hover {
+  background-color: #951818;
+  color: lightgrey;
+}
+
+.primaryInput {
+  width: 95%;
+  padding: var(--stdpadding);
+  font-size: var(--stdfontsize);
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  background: var(--textBackground);
+  color: var(--text);
+  outline: none;
+  transition: 0.2s;
+  display: block;
+}
+
+.primaryInput:focus {
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.classhidden{
+  visibility: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: var(--textBackground);
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  border-radius:  var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+}
+
+
+
+
+
+/* Popup container */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.popup .popupcontent {
+  visibility: hidden;
+  padding: 1rem;
+  background-color: var(--correct);
+  color: var(--incard);
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 115%;
+  left: 0%;
+  margin-left: -1px;
+}
+
+/* Popup arrow */
+.popup .popupcontent::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}

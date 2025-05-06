@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Kargo Durum</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles.css" />
+        <script src="script.js"></script>
+    </head>
+    <body>
+        
+    <header>
+        <img src="logo.png" alt="Description of image" width="410" height="160">
+    </header>
+
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="CargoTracker.html">Kargo Takip</a>
+        <a href="CargoRegister.html">Kargo Kayıt</a>
+        <a href="CargoDistribute.html">Kargo Dağıtım</a>
+        <a href="CargoStatus.html">Kargo Durum</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <main>
+        <div class="card" style="min-width: 800px;">
+            <h2 class="simpleHeader">Kargo Durum</h2>
+            <div class="cardflex" style="display: inline-block"><b>#️⃣Kargo Numarası:</b><br><br>139713781395</div>
+            <div class="cardflex" style="display: inline-block"><b>📅Tahmini Teslimat:</b><br><br>20.07.1402</div>
+            <div class="cardflex" style="display: inline-block"><b>👤Alıcı Adı:</b><br><br>Yavuz Sultan Selim</div>
+            <div class="cardflex" style="display: inline-block"><b>📅Gönderi Çıkış Tarihi:</b><br><br>20.07.1402</div>
+
+            
+            <div class="cardflex" style="display: block">
+                <b style="font-size: x-large">ℹ️Gönderi Detayları</b><br><br>
+                <div style="text-align: left; padding: 2rem;">
+                    <b>Alıcı Adresi:</b><br>
+                    Çubuk Ovası, Ankara
+                    <br><br>
+                    <b>Çıkış Birimi:</b><br>
+                    Çubuk Ovası, Ankara
+                    <br><br>
+                    <b>Teslimat Birimi:</b><br>
+                    Ankara
+                    <br><br>
+                    <b>Gönderici Adı:</b><br>
+                    Timurlenk
+                    <br><br>
+                    <b>Gönderici Türü:</b><br>
+                    1 Adet Dosya * 0 Desi
+                    
+                </div>
+            </div>
+            
+            <div class="cardflex" style="display: block;">
+                <b style="font-size: x-large">🚚Gönderi Hareketleri</b><br><br>
+                <div style="text-align: left; padding: 2rem;">
+                    <b>Alıcı Adresi:</b><br>
+                    Çubuk Ovası, Ankara
+                    <br><br>
+                    <b>Çıkış Birimi:</b><br>
+                    Çubuk Ovası, Ankara
+                    <br><br>
+                    <b>Teslimat Birimi:</b><br>
+                    Ankara
+                    <br><br>
+                    <b>Gönderici Adı:</b><br>
+                    Timurlenk
+                    <br><br>
+                    <b>Gönderici Türü:</b><br>
+                    1 Adet Dosya * 0 Desi
+                    
+                </div>
+            </div>
+            
+            <button type="button" class="primaryButton" style="width: 48%; display: inline-block">
+                Teslimat Gününü Değişitir
+            </button>
+            
+            <button type="button" onclick="myFunction()" class="popup primaryButton" style="width: 48%; display: inline-block">
+                İade Oluştur
+                <span>
+                    <span class="popupcontent" id="acceptPopup" style="text-align: center">İade Onaylandı.<br>Kargo Numarasını İade Kodu olarak kullanabilirsiniz.</span>
+                    <span class="popupcontent" id="declinePopup" style="text-align: center; background-color: var(--error);">İadeniz Oluşturulamadı Lütfen Şartları Sağladığınızdan Emin Olun.</span>
+                </span>
+            </button>
+        </div>
+      </main>
+
+      <footer>
+        &copy; 2025 My Website
+      </footer>
+
+        
+    </body>
+</html>
+
+
+<script>
+// When the user clicks on <div>, open the popup
+function myFunction() {
+  var popup = document.getElementById("declinePopup");
+  popup.classList.toggle("show");
+}
+</script>
