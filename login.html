@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Personel Yönetim Sistemi - Giriş</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="#">Personel Yönetimi</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="CargoStatus.html">Kargo Durum</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <div class="simpleHeader">Personel Yönetim Sistemi</div>
+      <form class="leftAlignForm" onsubmit="logIn(event)">
+        <label class="simpleLabel" for="inputTC">T.C. Kimlik No</label>
+        <input type="text" id="inputTC" class="primaryInput" placeholder="01234567890">
+
+        <label class="simpleLabel" for="inputPassword">Parola</label>
+        <input type="password" id="inputPassword" class="primaryInput">
+
+        <button type="submit" class="primaryButton">Giriş Yap</button>
+      </form>
+
+      <div class="classhidden" id="resultBox">
+        Sonuç burada gösterilecek.
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

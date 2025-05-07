@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Personel Yönetim Sistemi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ek dashboard stilleri */
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--textBackground);
+        }
+
+        .tab-button {
+            background: var(--textBackground);
+            border: none;
+            padding: 10px 20px;
+            margin-right: 5px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-button.active {
+            background: var(--primary);
+            color: black;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .user-info {
+            background-color: var(--incard);
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .info-label {
+            width: 120px;
+            font-weight: bold;
+            color: var(--primarylight);
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Personel Yönetimi</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="CargoStatus.html">Kargo Durum</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <div class="card" style="max-width: 700px;">
+      <div class="header-container">
+        <div class="simpleHeader">Personel Yönetim Sistemi</div>
+        <button class="logout-btn" onclick="logOut()">Çıkış Yap</button>
+      </div>
+
+      <div class="tab-container">
+        <button class="tab-button active" onclick="openTab('personalInfo')">Kişisel Bilgiler</button>
+        <button class="tab-button" id="staffTab" onclick="openTab('staff')">Personeller</button>
+        <button class="tab-button" id="branchTab" onclick="openTab('branches')">Şubeler</button>
+      </div>
+
+      <!-- Kişisel Bilgiler Sekmesi -->
+      <div id="personalInfo" class="tab-content active">
+        <div class="middleLabel">Kişisel Bilgileriniz</div>
+        <div class="user-info">
+          <div class="info-row">
+            <div class="info-label">Ad Soyad:</div>
+            <div class="info-value">Ahmet Yılmaz</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">T.C. Kimlik No:</div>
+            <div class="info-value">12345678901</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Telefon:</div>
+            <div class="info-value">0532 123 45 67</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">E-posta:</div>
+            <div class="info-value">ahmet.yilmaz@sirket.com</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Pozisyon:</div>
+            <div class="info-value">Genel Müdür</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Yetki Seviyesi:</div>
+            <div class="info-value" id="authLevel">3 - Tam Yetki</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personeller Sekmesi -->
+      <div id="staff" class="tab-content">
+        <div class="middleLabel">Personel Listesi</div>
+        <div class="user-info">
+          <p>Bu sekme şu anda geliştirme aşamasındadır.</p>
+        </div>
+      </div>
+
+      <!-- Şubeler Sekmesi -->
+      <div id="branches" class="tab-content">
+        <div class="middleLabel">Şube Listesi</div>
+        <div class="user-info">
+          <p>Bu sekme şu anda geliştirme aşamasındadır.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+
+  <script>
+    // Kullanıcı yetki seviyesi (dinamik olarak değiştirilecek)
+    // 1: Personel, 2: Şube Müdürü, 3: Genel Müdür
+    const userAuthLevel = 3;
+
+    // Sayfa yüklendiğinde yetki seviyesine göre sekmeleri ayarla
+    window.onload = function() {
+      setTabVisibility(userAuthLevel);
+    };
+
+    // Sekme görünürlüğünü yetki seviyesine göre ayarla
+    function setTabVisibility(authLevel) {
+      const staffTab = document.getElementById('staffTab');
+      const branchTab = document.getElementById('branchTab');
+
+      if (authLevel === 1) { // Personel
+        staffTab.style.display = 'none';
+        branchTab.style.display = 'none';
+      } else if (authLevel === 2) { // Şube Müdürü
+        staffTab.style.display = 'block';
+        branchTab.style.display = 'none';
+      } else if (authLevel === 3) { // Genel Müdür
+        staffTab.style.display = 'block';
+        branchTab.style.display = 'block';
+      }
+    }
+
+    // Sekmeler arası geçiş fonksiyonu
+    function openTab(tabName) {
+      // Tüm sekmeleri gizle
+      const tabContents = document.getElementsByClassName('tab-content');
+      for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+      }
+
+      // Tüm sekme butonlarının active sınıfını kaldır
+      const tabButtons = document.getElementsByClassName('tab-button');
+      for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove('active');
+      }
+
+      // Seçilen sekmeyi ve butonunu aktifleştir
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // Çıkış fonksiyonu
+    function logOut() {
+      if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>
