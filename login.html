@@ -13,7 +13,7 @@
 
   <nav>
     <a href="index.html">Home</a>
-    <a href="#">Personel Yönetimi</a>
+    <a href="login.html">Personel Yönetimi</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
@@ -27,15 +27,15 @@
       <div class="simpleHeader">Personel Yönetim Sistemi</div>
       <form class="leftAlignForm" onsubmit="logIn(event)">
         <label class="simpleLabel" for="inputTC">T.C. Kimlik No</label>
-        <input type="text" id="inputTC" class="primaryInput" placeholder="01234567890">
+        <input type="text" id="inputTC" class="primaryInput" placeholder="01234567890" required>
 
         <label class="simpleLabel" for="inputPassword">Parola</label>
-        <input type="password" id="inputPassword" class="primaryInput">
+        <input type="password" id="inputPassword" class="primaryInput" required>
 
         <button type="submit" class="primaryButton">Giriş Yap</button>
       </form>
 
-      <div class="classhidden" id="resultBox">
+      <div id="resultBox" class="result" style="display: none;">
         Sonuç burada gösterilecek.
       </div>
     </div>
@@ -45,6 +45,139 @@
     &copy; 2025 My Website
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Test kullanıcıları - gerçek sistemde bu veriler sunucudan gelir
+    const users = [
+      // Genel Müdür
+      {
+        tcNo: "33333333333",
+        password: "genelmudur123",
+        name: "Mehmet Demir",
+        phone: "0555 333 3333",
+        email: "mehmet.demir@sirket.com",
+        position: "Genel Müdür",
+        authLevel: 3
+      },
+
+      // İstanbul Şubesi Kullanıcıları
+      {
+        tcNo: "11111111111",
+        password: "ayse123",
+        name: "Ayşe Demir",
+        phone: "0532 111 2233",
+        email: "ayse.demir@sirket.com",
+        position: "İstanbul Şube Müdürü",
+        authLevel: 2,
+        branchId: 1
+      },
+      {
+        tcNo: "22222222222",
+        password: "mehmet123",
+        name: "Mehmet Yılmaz",
+        phone: "0535 222 3344",
+        email: "mehmet.yilmaz@sirket.com",
+        position: "Kargo Görevlisi",
+        authLevel: 1,
+        branchId: 1
+      },
+      {
+        tcNo: "44444444444",
+        password: "zeynep123",
+        name: "Zeynep Kaya",
+        phone: "0537 333 4455",
+        email: "zeynep.kaya@sirket.com",
+        position: "Müşteri Hizmetleri",
+        authLevel: 1,
+        branchId: 1
+      },
+
+      // Ankara Şubesi Kullanıcıları
+      {
+        tcNo: "55555555555",
+        password: "ali123",
+        name: "Ali Çelik",
+        phone: "0539 444 5566",
+        email: "ali.celik@sirket.com",
+        position: "Ankara Şube Müdürü",
+        authLevel: 2,
+        branchId: 2
+      },
+      {
+        tcNo: "66666666666",
+        password: "fatma123",
+        name: "Fatma Şahin",
+        phone: "0534 555 6677",
+        email: "fatma.sahin@sirket.com",
+        position: "Kargo Görevlisi",
+        authLevel: 1,
+        branchId: 2
+      },
+      {
+        tcNo: "77777777777",
+        password: "hasan123",
+        name: "Hasan Türk",
+        phone: "0538 666 7788",
+        email: "hasan.turk@sirket.com",
+        position: "Muhasebe Uzmanı",
+        authLevel: 1,
+        branchId: 2
+      }
+    ];
+
+    // Giriş fonksiyonu
+    function logIn(event) {
+      event.preventDefault();
+
+      const tcNo = document.getElementById("inputTC").value;
+      const password = document.getElementById("inputPassword").value;
+      const resultBox = document.getElementById("resultBox");
+
+      // Kullanıcı doğrulama
+      const user = users.find(u => u.tcNo === tcNo && u.password === password);
+
+      if (user) {
+        // Giriş başarılı
+        resultBox.className = "result success";
+        resultBox.style.display = "block";
+        resultBox.innerHTML = "Giriş başarılı! Yönlendiriliyorsunuz...";
+
+        // Kullanıcı bilgilerini localStorage'a kaydet
+        localStorage.setItem("currentUser", JSON.stringify({
+          tcNo: user.tcNo,
+          name: user.name,
+          phone: user.phone,
+          email: user.email,
+          position: user.position,
+          authLevel: user.authLevel,
+          branchId: user.branchId || null
+        }));
+
+        // 1 saniye sonra PersonnelManagement sayfasına yönlendir
+        setTimeout(() => {
+          window.location.href = "PersonnelManagement.html";
+        }, 1000);
+      } else {
+        // Giriş başarısız
+        resultBox.className = "result error";
+        resultBox.style.display = "block";
+        resultBox.innerHTML = "T.C. Kimlik No veya Parola hatalı!";
+      }
+    }
+
+    // Sayfa yüklendiğinde oturum kontrolü
+    window.onload = function() {
+      // Eğer zaten giriş yapılmışsa PersonnelManagement sayfasına yönlendir
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        window.location.href = "PersonnelManagement.html";
+      }
+
+      // Test için T.C. Kimlik Numaralarını ve şifreleri konsola yazdır
+      console.log("Giriş testi için kullanıcılar:");
+      users.forEach(user => {
+        console.log(`${user.position}: TC: ${user.tcNo}, Şifre: ${user.password}`);
+      });
+    };
+  </script>
 </body>
 </html>
