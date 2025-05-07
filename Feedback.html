@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Geribildirim Formu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Personel Yönetimi</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="CargoStatus.html">Kargo Durum</a>
+    <a href="Feedback.html">Memnuniyet</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <div class="simpleHeader">Müşteri Geribildirim Formu</div>
+
+      <form class="leftAlignForm" id="feedbackForm">
+        <div>
+          <label class="simpleLabel" style="display: inline-flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="anonymousCheck" style="margin-right: 8px;">
+            Anonim olarak gönder
+          </label>
+        </div>
+
+        <div id="personalInfoSection">
+          <div>
+            <label class="simpleLabel" for="name">Ad Soyad</label>
+            <input type="text" id="name" name="name" class="primaryInput" required>
+          </div>
+
+          <div>
+            <label class="simpleLabel" for="email">E-posta</label>
+            <input type="email" id="email" name="email" class="primaryInput" required>
+          </div>
+
+          <div>
+            <label class="simpleLabel" for="phone">Telefon</label>
+            <input type="tel" id="phone" name="phone" class="primaryInput">
+          </div>
+        </div>
+
+        <div>
+          <label class="simpleLabel" for="feedbackType">Geribildirim Türü</label>
+          <select id="feedbackType" name="feedbackType" class="selectRoundedBlack" required>
+            <option value="">Seçiniz</option>
+            <option value="late_delivery">Geç Teslimat</option>
+            <option value="damaged_cargo">Hasarlı Kargo</option>
+            <option value="lost_cargo">Kayıp Kargo</option>
+            <option value="courier_behavior">Kurye Davranışı</option>
+            <option value="branch_service">Şube Hizmeti</option>
+            <option value="customer_service">Müşteri Hizmetleri</option>
+            <option value="app_website">Uygulama/Web Sitesi</option>
+            <option value="pricing">Fiyatlandırma</option>
+            <option value="delivery_speed">Teslimat Süresi/Hızı</option>
+            <option value="tracking_system">Kargo Takip Sistemi</option>
+            <option value="service_quality">Hizmet Kalitesi</option>
+            <option value="general_suggestion">Genel Öneri</option>
+            <option value="other">Diğer</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="simpleLabel" for="cargoNumber">Kargo Takip Numarası (Opsiyonel)</label>
+          <input type="text" id="cargoNumber" name="cargoNumber" class="primaryInput">
+        </div>
+
+        <div>
+          <label class="simpleLabel" for="subject">Konu</label>
+          <input type="text" id="subject" name="subject" class="primaryInput" required>
+        </div>
+
+        <div>
+          <label class="simpleLabel" for="message">Mesajınız</label>
+          <textarea id="message" name="message" class="primaryInput" style="min-height: 150px; resize: vertical;" required></textarea>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <button type="submit" class="primaryButton">Gönder</button>
+        </div>
+      </form>
+
+      <div id="resultMessage" class="result" style="display: none;">
+        Geribildiriminiz için teşekkür ederiz. En kısa sürede değerlendirilecektir.
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+
+  <script>
+    // Anonim gönderim için checkbox kontrol
+    const anonymousCheck = document.getElementById('anonymousCheck');
+    const personalInfoSection = document.getElementById('personalInfoSection');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+
+    // Checkbox değişimini izle
+    anonymousCheck.addEventListener('change', function() {
+      if (this.checked) {
+        // Anonim mod aktif
+        personalInfoSection.style.display = 'none';
+        nameInput.required = false;
+        emailInput.required = false;
+        phoneInput.required = false;
+      } else {
+        // Normal mod
+        personalInfoSection.style.display = 'block';
+        nameInput.required = true;
+        emailInput.required = true;
+      }
+    });
+
+    // Form gönderimi
+    document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Normalde burada form verileri bir API'ye gönderilir
+      // Bu örnek için sadece başarılı gönderim simülasyonu yapıyoruz
+
+      // Form alanlarını temizle
+      this.reset();
+
+      // Anonim checkbox'ı sıfırla ve kişisel bilgi alanlarını göster
+      anonymousCheck.checked = false;
+      personalInfoSection.style.display = 'block';
+      nameInput.required = true;
+      emailInput.required = true;
+
+      // Başarı mesajını göster
+      const resultMessage = document.getElementById('resultMessage');
+      resultMessage.className = 'result success';
+      resultMessage.style.display = 'block';
+      resultMessage.textContent = 'Geribildiriminiz için teşekkür ederiz. En kısa sürede değerlendirilecektir.';
+
+      // 5 saniye sonra mesajı gizle
+      setTimeout(function() {
+        resultMessage.style.display = 'none';
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
