@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmation Popup</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Overlay background */
+    #confirmOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    /* Popup box */
+    #confirmBox {
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    #confirmBox button {
+      margin: 7px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="confirmOverlay">
+  <div id="confirmBox">
+    <p id="confirmMessage" class="simpleLabel" style="font-size: 1.75rem">İşleminiz Onaylandı!</p>
+    <button class="acceptButton" onClick="confirmYes()">Tamam</button>
+  </div>
+</div>
+
+<script>
+  let confirmCallback = null;
+
+  function confirmYes() {
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>

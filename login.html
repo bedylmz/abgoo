@@ -5,6 +5,144 @@
     <title>Personel Yönetim Sistemi - Giriş</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ek dashboard stilleri */
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--textBackground);
+        }
+
+        .tab-button {
+            background: var(--textBackground);
+            border: none;
+            padding: 10px 20px;
+            margin-right: 5px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tab-button.active {
+            background: var(--primary);
+            color: black;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .user-info {
+            background-color: var(--incard);
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .info-label {
+            width: 120px;
+            font-weight: bold;
+            color: var(--primarylight);
+        }
+
+        .info-value {
+            flex: 1;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Şube listesi için stiller */
+        .branch-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .branch-item {
+            background-color: var(--textBackground);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .branch-item:hover {
+            background-color: var(--primary);
+            color: black;
+        }
+
+        .branch-info {
+            flex: 1;
+        }
+
+        .branch-action {
+            margin-left: 10px;
+        }
+
+        /* Personel listesi için stiller */
+        .staff-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .staff-item {
+            background-color: var(--textBackground);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .staff-item.manager {
+            border-left: 4px solid var(--primary);
+        }
+
+        .staff-position {
+            color: var(--muted);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .add-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
   <header>
@@ -14,25 +152,28 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
-    <a href="CargoStatus.html">Kargo Durum</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
   </nav>
 
-  <main>
+  <main id = "main01">
     <div class="card">
       <div class="simpleHeader">Personel Yönetim Sistemi</div>
       <form class="leftAlignForm" onsubmit="logIn(event)">
         <label class="simpleLabel" for="inputTC">T.C. Kimlik No</label>
-        <input type="text" id="inputTC" class="primaryInput" placeholder="01234567890" required>
+        <input type="text" id="inputTC" name = "name" class="primaryInput" placeholder="01234567890" required>
 
         <label class="simpleLabel" for="inputPassword">Parola</label>
-        <input type="password" id="inputPassword" class="primaryInput" required>
+        <input type="password" name = "password" id="inputPassword" class="primaryInput" required>
 
-        <button type="submit" class="primaryButton">Giriş Yap</button>
+        <button type="submit" class="primaryButton" style="width: 100%">Giriş Yap</button>
       </form>
 
       <div id="resultBox" class="result" style="display: none;">
@@ -46,124 +187,242 @@
   </footer>
 
   <script>
-    // Test kullanıcıları - gerçek sistemde bu veriler sunucudan gelir
-    const users = [
+    /*const users = [
       // Genel Müdür
       {
-        tcNo: "33333333333",
-        password: "genelmudur123",
+        tcNo: "3",
+        password: "011",
         name: "Mehmet Demir",
         phone: "0555 333 3333",
-        email: "mehmet.demir@sirket.com",
-        position: "Genel Müdür",
         authLevel: 3
       },
 
       // İstanbul Şubesi Kullanıcıları
       {
-        tcNo: "11111111111",
+        tcNo: "1",
         password: "ayse123",
         name: "Ayşe Demir",
         phone: "0532 111 2233",
         email: "ayse.demir@sirket.com",
         position: "İstanbul Şube Müdürü",
         authLevel: 2,
-        branchId: 1
+        workPlace: 1
       },
-      {
-        tcNo: "22222222222",
-        password: "mehmet123",
-        name: "Mehmet Yılmaz",
-        phone: "0535 222 3344",
-        email: "mehmet.yilmaz@sirket.com",
-        position: "Kargo Görevlisi",
-        authLevel: 1,
-        branchId: 1
-      },
-      {
-        tcNo: "44444444444",
-        password: "zeynep123",
-        name: "Zeynep Kaya",
-        phone: "0537 333 4455",
-        email: "zeynep.kaya@sirket.com",
-        position: "Müşteri Hizmetleri",
-        authLevel: 1,
-        branchId: 1
-      },
-
+      
       // Ankara Şubesi Kullanıcıları
       {
-        tcNo: "55555555555",
+        tcNo: "5",
         password: "ali123",
         name: "Ali Çelik",
         phone: "0539 444 5566",
         email: "ali.celik@sirket.com",
         position: "Ankara Şube Müdürü",
         authLevel: 2,
-        branchId: 2
+        workPlace: 2
       },
-      {
-        tcNo: "66666666666",
-        password: "fatma123",
-        name: "Fatma Şahin",
-        phone: "0534 555 6677",
-        email: "fatma.sahin@sirket.com",
-        position: "Kargo Görevlisi",
-        authLevel: 1,
-        branchId: 2
-      },
-      {
-        tcNo: "77777777777",
-        password: "hasan123",
-        name: "Hasan Türk",
-        phone: "0538 666 7788",
-        email: "hasan.turk@sirket.com",
-        position: "Muhasebe Uzmanı",
-        authLevel: 1,
-        branchId: 2
-      }
-    ];
 
+    ];*/
+    
+    var sectionID = null;
+    
     // Giriş fonksiyonu
     function logIn(event) {
       event.preventDefault();
 
-      const tcNo = document.getElementById("inputTC").value;
-      const password = document.getElementById("inputPassword").value;
       const resultBox = document.getElementById("resultBox");
+      
+      const id = document.getElementById("inputTC").value;
+      const password = document.getElementById("inputPassword").value;
+      
+      const query = `?id=${encodeURIComponent(id)}&password=${encodeURIComponent(password)}`;
 
       // Kullanıcı doğrulama
-      const user = users.find(u => u.tcNo === tcNo && u.password === password);
+       fetch('/api/managers/filtered'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              // Giriş başarısız
+              resultBox.className = "result error";
+              resultBox.style.display = "block";
+              resultBox.innerHTML = "T.C. Kimlik No veya Parola hatalı!";
+              return;
+            }
+         
+            const manager = data[0];
+            const oldMain = document.getElementById('main01');
+            const newMain = document.createElement('main');
+         
+            if(manager.workPlace)
+            {
+              sectionID = manager.workPlace;
+            }
+            else
+            {
+              sectionID = -1;
+            }
+            
+            var position;
+            if(manager.authLevel === 2)
+            {
+              position = "Şube Müdürü";
+              newMain.innerHTML = `
+              <div class="card" style="max-width: 700px;">
+                <div class="header-container">
+                  <div class="simpleHeader">Personel Yönetim Sistemi</div>
+                  <button class="logout-btn" id="logoutBtn" onClick="logoutBtnFunc()">Çıkış Yap</button>
+                </div>
 
-      if (user) {
-        // Giriş başarılı
-        resultBox.className = "result success";
-        resultBox.style.display = "block";
-        resultBox.innerHTML = "Giriş başarılı! Yönlendiriliyorsunuz...";
+                <div class="tab-container">
+                  <button class="tab-button active" id="personalInfoBtn" onClick="personalInfoBtnFunc()">Kişisel Bilgiler</button>
+                  <button class="tab-button" id="branchTab" onClick="branchTabFunc()">Şubeler</button>
+                  <button class="tab-button" id="staffTab" onClick="staffTabFunc()">Personeller</button>
+                </div>
 
-        // Kullanıcı bilgilerini localStorage'a kaydet
-        localStorage.setItem("currentUser", JSON.stringify({
-          tcNo: user.tcNo,
-          name: user.name,
-          phone: user.phone,
-          email: user.email,
-          position: user.position,
-          authLevel: user.authLevel,
-          branchId: user.branchId || null
-        }));
+                <!-- Kişisel Bilgiler Sekmesi -->
+                <div id="personalInfo" class="tab-content active">
+                  <div class="middleLabel">Kişisel Bilgileriniz</div>
+                  <div class="user-info">
+                    <div class="info-row">
+                      <div class="info-label">Ad Soyad:</div>
+                      <div class="info-value" id="userName">${manager.name}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">T.C. Kimlik No:</div>
+                      <div class="info-value" id="userTCNo">${manager.id}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Telefon:</div>
+                      <div class="info-value" id="userPhone">${manager.phone}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Pozisyon:</div>
+                      <div class="info-value" id="userPosition">${position}</div>
+                    </div>
+                  </div>
+                </div>
 
-        // 1 saniye sonra PersonnelManagement sayfasına yönlendir
-        setTimeout(() => {
-          window.location.href = "PersonnelManagement.html";
-        }, 1000);
-      } else {
-        // Giriş başarısız
-        resultBox.className = "result error";
-        resultBox.style.display = "block";
-        resultBox.innerHTML = "T.C. Kimlik No veya Parola hatalı!";
-      }
+                <!-- Şubeler Sekmesi -->
+                <div id="branches" class="tab-content">
+                  <div class="middleLabel">Şube Listesi</div>
+                  <div class="user-info">
+                    <ul class="branch-list" id="branchList">
+                      <!-- Şubeler dinamik olarak burada listelenecek -->
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Personeller Sekmesi -->
+                <div id="staff" class="tab-content">
+                  <div class="middleLabel">Personel Listesi</div>
+                  <div id="selectedBranchName" class="simpleLabel" style="margin-bottom: 15px; text-align: center;">
+                    Tüm Personeller
+                  </div>
+                  <div class="user-info">
+                    <ul class="staff-list" id="staffList">
+                      <!-- Personeller dinamik olarak burada listelenecek -->
+                    </ul>
+                  </div>
+                </div>
+
+              </div>`
+            ;
+            }
+            else if(manager.authLevel === 3)
+            {
+              position = "Genel Müdür";
+              newMain.innerHTML = `
+              <div class="card" style="max-width: 700px;">
+                <div class="header-container">
+                  <div class="simpleHeader">Personel Yönetim Sistemi</div>
+                  <button class="logout-btn" id="logoutBtn" onClick="logoutBtnFunc()">Çıkış Yap</button>
+                </div>
+
+                <div class="tab-container">
+                  <button class="tab-button active" id="personalInfoBtn" onClick="personalInfoBtnFunc()">Kişisel Bilgiler</button>
+                  <button class="tab-button" id="branchTab" onClick="branchTabFunc()">Şubeler</button>
+                  <button class="tab-button" id="staffTab" onClick="staffTabFunc()">Personeller</button>
+                  <button class="tab-button" id="addTab" onClick="addTabFunc()">Ekleme</button>
+                </div>
+
+                <!-- Kişisel Bilgiler Sekmesi -->
+                <div id="personalInfo" class="tab-content active">
+                  <div class="middleLabel">Kişisel Bilgileriniz</div>
+                  <div class="user-info">
+                    <div class="info-row">
+                      <div class="info-label">Ad Soyad:</div>
+                      <div class="info-value" id="userName">${manager.name}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">T.C. Kimlik No:</div>
+                      <div class="info-value" id="userTCNo">${manager.id}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Telefon:</div>
+                      <div class="info-value" id="userPhone">${manager.phone}</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-label">Pozisyon:</div>
+                      <div class="info-value" id="userPosition">${position}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Şubeler Sekmesi -->
+                <div id="branches" class="tab-content">
+                  <div class="middleLabel">Şube Listesi</div>
+                  <div class="user-info">
+                    <ul class="branch-list" id="branchList">
+                      <!-- Şubeler dinamik olarak burada listelenecek -->
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Personeller Sekmesi -->
+                <div id="staff" class="tab-content">
+                  <div class="middleLabel">Personel Listesi</div>
+                  <div id="selectedBranchName" class="simpleLabel" style="margin-bottom: 15px; text-align: center;">
+                    Tüm Personeller
+                  </div>
+                  <div class="user-info">
+                    <ul class="staff-list" id="staffList">
+                      <!-- Personeller dinamik olarak burada listelenecek -->
+                    </ul>
+                  </div>
+                </div>
+                
+                <!-- Ekleme Sekmesi -->
+                <div id="add" class="tab-content">
+                  <div class="middleLabel">Eklemek istediğinize tıklayın</div>
+                  
+                <div style="margin-top: 20px;">
+                  <button type="submit" class="primaryButton" style="width: 50%" onClick="loadDeliverymen()">Kargocu Ekle</button>
+                  <button type="submit" class="primaryButton" style="width: 50%" onClick="loadCarriers()">Taşımacı Ekle</button>
+                </div>
+                </div>
+
+              </div>`
+            ;
+            }
+            else
+            {
+              position = "Tanımsız";
+            }
+            // Giriş başarılı
+            resultBox.className = "result success";
+            resultBox.style.display = "block";
+            resultBox.innerHTML = "Giriş başarılı! Yönlendiriliyorsunuz...";
+         
+
+            // 1 saniye sonra PersonnelManagement sayfasına yönlendir
+            setTimeout(() => {
+              document.body.replaceChild(newMain, oldMain);
+              loadLists(manager.authLevel);
+            }, 1000);
+          });
     }
-
+/*
     // Sayfa yüklendiğinde oturum kontrolü
     window.onload = function() {
       // Eğer zaten giriş yapılmışsa PersonnelManagement sayfasına yönlendir
@@ -171,13 +430,433 @@
       if (currentUser) {
         window.location.href = "PersonnelManagement.html";
       }
+    };*/
+    
+    // Seçili şubenin ID'si
+    //let selectedBranchId = null;
+    
+    
+    
+    /*
+    // DOM öğelerini seçme
+    const personalInfoBtn = document.getElementById('personalInfoBtn');
+    const branchTab = document.getElementById('branchTab');
+    const staffTab = document.getElementById('staffTab');
+    
+    const personalInfoContent = document.getElementById('personalInfo');
+    const branchesContent = document.getElementById('branches');
+    const staffContent = document.getElementById('staff');
+    
+    const logoutBtn = document.getElementById('logoutBtn');
+    const addBranchBtn = document.getElementById('addBranchBtn');
+    const addStaffBtn = document.getElementById('addStaffBtn');*/
+    
+    function loadDeliverymen()
+    {
+      window.location.href = "deliverymanAdd.html";
+    }
+    
+    function loadCarriers()
+    {
+      window.location.href = "carriersAdd.html";
+    }
+    
+    function addTabFunc()
+    {
+      openTab('add');
+    }
 
-      // Test için T.C. Kimlik Numaralarını ve şifreleri konsola yazdır
-      console.log("Giriş testi için kullanıcılar:");
-      users.forEach(user => {
-        console.log(`${user.position}: TC: ${user.tcNo}, Şifre: ${user.password}`);
-      });
-    };
+    // Event Listener'ları ayarlama
+    function personalInfoBtnFunc()
+    {
+      openTab('personalInfo');
+    }
+    /*
+    personalInfoBtn.addEventListener('click', function() {
+      openTab('personalInfo');
+    });*/
+    function branchTabFunc()
+    {
+      openTab('branches');
+    }/*
+    branchTab.addEventListener('click', function() {
+      openTab('branches');
+    });*/
+    
+    function staffTabFunc()
+    {
+      openTab('staff');
+    }/*
+    staffTab.addEventListener('click', function() {
+      openTab('staff');
+    });*/
+    
+    function logoutBtnFunc()
+    {
+      logOut();
+    }/*
+    logoutBtn.addEventListener('click', function() {
+      logOut();
+    });*/
+    
+    /*
+    // Personel tipi seçimi için gerekli elementler
+    const staffListContainer = document.querySelector('#staff .user-info');
+    const staffTypeSelector = document.getElementById('staffTypeSelector');
+    const cancelStaffTypeBtn = document.getElementById('cancelStaffTypeBtn');
+    const courierBtn = document.getElementById('courierBtn');
+    const carrierBtn = document.getElementById('carrierBtn');
+    */
+    // Personel Ekle butonuna tıklandığında
+    function addStaffBtnFunc()
+    {
+      const staffListContainer = document.querySelector('#staff .user-info');
+      const staffTypeSelector = document.getElementById('staffTypeSelector');
+      
+      // Personel listesini gizle
+      staffListContainer.style.display = 'none';
+      // Personel tipi seçim ekranını göster
+      staffTypeSelector.style.display = 'block';
+    }/*
+    addStaffBtn.addEventListener('click', function() {
+      // Personel listesini gizle
+      staffListContainer.style.display = 'none';
+      // Personel tipi seçim ekranını göster
+      staffTypeSelector.style.display = 'block';
+    });*/
+    
+    function cancelStaffTypeBtnFunc()
+    {
+      const staffListContainer = document.querySelector('#staff .user-info');
+      const staffTypeSelector = document.getElementById('staffTypeSelector');
+      
+      // Personel tipi seçim ekranını gizle
+      staffTypeSelector.style.display = 'none';
+      // Personel listesini göster
+      staffListContainer.style.display = 'block';
+    }/*
+    // İptal butonuna tıklandığında
+    cancelStaffTypeBtn.addEventListener('click', function() {
+      // Personel tipi seçim ekranını gizle
+      staffTypeSelector.style.display = 'none';
+      // Personel listesini göster
+      staffListContainer.style.display = 'block';
+    });*/
+    
+    function courierBtnFunc()
+    {
+      // Kargocu ekleme sayfasına yönlendir
+      window.location.href = "deliverymanAdd.html";
+    }/*
+    // Kargocu butonu tıklandığında
+    courierBtn.addEventListener('click', function() {
+      // Kargocu ekleme sayfasına yönlendir
+      window.location.href = "deliverymanAdd.html";
+    });*/
+    
+    function carrierBtnFunc()
+    {
+      // Taşıyıcı ekleme sayfasına yönlendir
+      window.location.href = "carrierAdd.html";
+    }/*
+    // Taşıyıcı butonu tıklandığında
+    carrierBtn.addEventListener('click', function() {
+      // Taşıyıcı ekleme sayfasına yönlendir
+      window.location.href = "carrierAdd.html";
+    });*/
+
+    // Çıkış fonksiyonu
+    function logOut() {
+      if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+        // LocalStorage'dan kullanıcı bilgilerini temizle
+        //localStorage.removeItem("currentUser");
+        sectionID = null;
+        // Login sayfasına yönlendir
+        window.location.href = "login.html";
+      }
+    }
+
+    // Sekmeler arası geçiş fonksiyonu
+    function openTab(tabName) {
+      const personalInfoContent = document.getElementById('personalInfo');
+      const branchesContent = document.getElementById('branches');
+      const staffContent = document.getElementById('staff');
+      const addContent = document.getElementById('add');
+      // Tüm sekmeleri gizle
+      personalInfoContent.classList.remove('active');
+      branchesContent.classList.remove('active');
+      staffContent.classList.remove('active');
+      addContent.classList.remove('active');
+      
+      const personalInfoBtn = document.getElementById('personalInfoBtn');
+      const branchTab = document.getElementById('branchTab');
+      const staffTab = document.getElementById('staffTab');
+      const addTab = document.getElementById('addTab');
+      // Tüm sekme butonlarının active sınıfını kaldır
+      personalInfoBtn.classList.remove('active');
+      branchTab.classList.remove('active');
+      staffTab.classList.remove('active');
+      addTab.classList.remove('active');
+
+      // Seçilen sekmeyi ve butonunu aktifleştir
+      if (tabName === 'personalInfo') {
+        personalInfoContent.classList.add('active');
+        personalInfoBtn.classList.add('active');
+      } else if (tabName === 'branches') {
+        branchesContent.classList.add('active');
+        branchTab.classList.add('active');
+      } else if (tabName === 'staff') {
+        staffContent.classList.add('active');
+        staffTab.classList.add('active');
+      }
+      else if (tabName === 'add') {
+        addContent.classList.add('active');
+        addTab.classList.add('active');
+      }
+
+        // Personeller sekmesi açıldığında, seçili şube yoksa sıfırla
+        if (!sectionID) {
+          document.getElementById("selectedBranchName").textContent = "Tüm Personeller";
+          renderStaffList();
+        }
+    }
+    
+
+    
+    
+    // Şubenin personellerini göster
+    function viewBranchStaff(branchId) {
+      
+      sectionID = branchId;
+      //const branch = branches.find(b => b.id === branchId);
+
+      // Seçilen şube bilgisini güncelle
+      //document.getElementById("selectedBranchName").textContent = `${branch.name} Personelleri`;
+      //document.getElementById("selectedBranchName").textContent = `${branchId}Şube Personelleri`;
+
+      // Personel listesini güncelle
+      renderStaffList(branchId);
+
+      // Personeller sekmesine geç
+      openTab('staff');
+    }
+
+    // Şube listesini oluştur
+    function renderBranchList() 
+    {
+      var QUERY;
+      if(sectionID == -1)
+      {
+        QUERY = '/api/sections';
+      }
+      else
+      {
+        const query = sectionID ? `?id=${encodeURIComponent(sectionID)}` : '';
+        QUERY = '/api/sections/filtered'+ query;
+      }
+      
+      fetch(QUERY)
+        .then(res => res.json())
+        .then(data => 
+        {
+          const branchList = document.getElementById("branchList");
+          branchList.innerHTML = ""; // Listeyi temizle
+        
+          if (data.length === 0) {
+            return;
+          }
+
+          data.forEach(branch => {
+            const li = document.createElement("li");
+            li.className = "branch-item";
+            li.innerHTML = `
+              <div class="branch-info">
+                <strong>${branch.name}</strong><br>
+                <small>${branch.location}</small>
+              </div>
+              <div class="branch-action">
+                <button class="primaryButton" id="viewBranch${branch.id}" onClick="viewBranchStaff(${branch.id})">Personelleri Gör</button>
+              </div>
+            `;
+            
+            branchList.appendChild(li);
+          });
+    });
+    }
+
+    // Personel listesini oluştur
+    function renderStaffList(branchId) 
+    {
+      
+      
+      var QUERY1 ;
+      var QUERY2 ;
+      var QUERY3 ;
+      // Secilen veya Şube müdürü ise sadece kendi şubesinin personellerini göster
+      if (branchId === -1) {
+        QUERY1 = '/api/deliverymen';
+        QUERY2 = '/api/carriers';
+        QUERY3 = '/api/managers';
+      }
+      // Genel müdür için tüm personelleri göster
+      else{
+        const query = branchId ? `?workPlace=${encodeURIComponent(branchId)}` : '';
+        QUERY1 = '/api/deliverymen/filteredWorkPlace' + query;
+        QUERY2 = '/api/carriers/filteredWorkPlace' + query;
+        QUERY3 = '/api/managers/filteredWorkPlace' + query;
+      }
+      
+      const staffList = document.getElementById("staffList");
+      staffList.innerHTML = ""; // Listeyi temizle
+      
+      //deliverymens
+      fetch(QUERY1)
+        .then(res => res.json())
+        .then(data => 
+        {
+          if (data.length === 0) {
+            return;
+          }  
+          data.forEach(staff => {
+            const li = document.createElement("li");
+            //li.className = staff.isManager ? "staff-item manager" : "staff-item";
+            li.className = "staff-item";
+
+            // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
+            let branchInfo = "";
+            if (!branchId) {
+              branchInfo = `<div><small>${branchId}</small></div>`;
+            }
+
+            li.innerHTML = `
+              <div>
+                <strong>${staff.name}</strong>
+                <div class="staff-position">Kargocu</div>
+                ${branchInfo}
+              </div>
+              <div>
+                <div>${staff.phone}</div>
+              </div>
+            `;
+            staffList.appendChild(li);
+          });
+        });
+      
+      
+        //carries
+        fetch(QUERY2)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) {
+              return;
+            }  
+            data.forEach(staff => {
+              const li = document.createElement("li");
+              //li.className = staff.isManager ? "staff-item manager" : "staff-item";
+              li.className = "staff-item";
+
+              // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
+              let branchInfo = "";
+              if (!branchId) {
+                branchInfo = `<div><small>${branchId}</small></div>`;
+              }
+
+              li.innerHTML = `
+                <div>
+                  <strong>${staff.name}</strong>
+                  <div class="staff-position">Taşıyıcı</div>
+                  ${branchInfo}
+                </div>
+                <div>
+                  <div>${staff.phone}</div>
+                </div>
+              `;
+              staffList.appendChild(li);
+            });
+          });
+      
+        //carries
+        fetch(QUERY3)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) {
+              return;
+            }  
+            data.forEach(staff => {
+              const li = document.createElement("li");
+              //li.className = staff.isManager ? "staff-item manager" : "staff-item";
+              li.className = "staff-item manager";
+
+              // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
+              let branchInfo = "";
+              if (!branchId) {
+                branchInfo = `<div><small>${branchId}</small></div>`;
+              }
+
+              li.innerHTML = `
+                <div>
+                  <strong>${staff.name}</strong>
+                  <div class="staff-position">Şube Müdürü</div>
+                  ${branchInfo}
+                </div>
+                <div>
+                  <div>${staff.phone}</div>
+                </div>
+              `;
+              staffList.appendChild(li);
+            });
+          });
+    }
+
+    // Sekme görünürlüğünü yetki seviyesine göre ayarla
+    function setTabVisibility(authLevel) {
+      const branchTab = document.getElementById('branchTab');
+      const staffTab = document.getElementById('staffTab');
+      if (authLevel === 1) { // Personel
+        staffTab.style.display = 'none';
+        branchTab.style.display = 'none';
+      } else if (authLevel === 2) { // Şube Müdürü
+        staffTab.style.display = 'block';
+        branchTab.style.display = 'none';
+      } else if (authLevel === 3) { // Genel Müdür
+        staffTab.style.display = 'block';
+        branchTab.style.display = 'block';
+      }
+    }
+    
+    
+    // Sayfa yüklendiğinde çalışacak fonksiyon
+    function loadLists(authLevel)
+    {
+      try {
+        /*
+        // Yetki seviyesine göre açıklama ekle
+        let authLevelText = "-";
+        if (user.function setTabVisibility === 1) {
+          authLevelText = "1 - Sınırlı Yetki";
+        } else if (user.authLevel === 2) {
+          authLevelText = "2 - Orta Seviye Yetki";
+        } else if (user.authLevel === 3) {
+          authLevelText = "3 - Tam Yetki";
+        }
+        document.getElementById("authLevel").textContent = authLevelText;*/
+
+        // Yetki seviyesine göre sekmeleri ayarla
+        setTabVisibility(authLevel);
+
+        // Şube ve personel listelerini oluştur
+        renderBranchList();
+        renderStaffList(sectionID);
+      } catch (error) {
+        console.error("Kullanıcı bilgileri yüklenirken hata oluştu:", error);
+        // Hata durumunda localStorage'ı temizle ve login sayfasına yönlendir
+        sectionID = null;
+        window.location.href = "login.html";
+      }
+    }
+    
   </script>
 </body>
 </html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Memnuniyet Raporları</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .report-container {
+            background-color: var(--incard);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: var(--textBackground);
+            padding: 15px;
+            border-radius: var(--radius);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--primarylight);
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background-color: var(--textBackground);
+            padding: 15px;
+            border-radius: var(--radius);
+            flex: 1;
+            min-width: 120px;
+            margin: 5px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+  
+    <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
+  </nav>
+
+  <main>
+    <div class="card" style="max-width: 900px;">
+      <div class="simpleHeader">Memnuniyet Raporları</div>
+      
+      <!-- Filtreleme Seçenekleri -->
+      <div class="filter-container">
+        
+        <div class="filter-group">
+          <span class="filter-label">Görünüm:</span>
+          <select id="viewFilter" class="selectRoundedBlack" style="margin-bottom: 0;">
+            <option value="monthly">Aylık</option>
+            <option value="yearly">Yıllık</option>
+          </select>
+        </div>
+      </div>
+    
+      <!-- Türlere Göre Dağılım Grafikleri -->
+      <div class="middleLabel">Türlere Göre Dağılım</div>
+      <div class="report-container">
+        <div style="display: flex; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 300px;">
+            <div class="chart-container">
+              <canvas id="typeBarChart"></canvas>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 300px;">
+            <div class="chart-container">
+              <canvas id="typePieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Zamana Göre Dağılım Grafiği -->
+      <div class="middleLabel">Zamana Göre Dağılım</div>
+      <div class="report-container">
+        <div class="chart-container">
+          <canvas id="timeLineChart"></canvas>
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px;">
+          <button type="submit" class="primaryButton" style="width: 100%" onClick="loadData()">Verileri Güncelle</button>
+        </div>
+    </div>
+  </main>
+  
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+
+  <script>
+  // Geribildirim türleri
+  const feedbackTypes = [
+    { id: '1', label: 'Geç Teslimat' },
+    { id: '2', label: 'Hasarlı Kargo' },
+    { id: '3', label: 'Kayıp Kargo' },
+    { id: '4', label: 'Kurye Davranışı' },
+    { id: '5', label: 'Şube Hizmeti' },
+    { id: '6', label: 'Müşteri Hizmetleri' },
+    { id: '7', label: 'Uygulama/Web Sitesi' },
+    { id: '8', label: 'Fiyatlandırma' },
+    { id: '9', label: 'Teslimat Süresi/Hızı' },
+    { id: '10', label: 'Kargo Takip Sistemi' },
+    { id: '11', label: 'Hizmet Kalitesi' },
+    { id: '12', label: 'Genel Öneri' },
+    { id: '13', label: 'Diğer' }
+  ];
+  
+  // Grafik referansları
+  let typeBarChart, typePieChart, timeLineChart;
+  
+  // Veri setleri
+  var data = {
+    // Aylık veri
+    monthly: {
+      labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+      values: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    // Yıllık veri
+    yearly: {
+      labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+      values: [0, 0, 0, 0, 0, 0]
+    },
+    // Tür bazlı veri
+    types: {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+      '6': 0,
+      '7': 0,
+      '8': 0, // Hiç bildirim almayan tür
+      '9': 0,
+      '10': 0,
+      '11': 0,
+      '12': 0,
+      '13': 0
+    }
+  };
+    
+  function fetchDataMonth(value, month)
+  {
+    const query = value ? `?monthCreated=${encodeURIComponent(value)}` : '';
+    QUERY = '/api/feedback/filteredMonth' + query;
+
+    fetch(QUERY)
+      .then(res => res.json())
+      .then(datas => 
+      {
+        if (datas.length === 0) {
+          return;
+        }  
+
+        data.monthly.values[month] = datas.length;
+        /*data.forEach(year => {
+        });*/
+      });
+  }
+    
+  function fetchDataType(type)
+  {
+    const query = type ? `?type=${encodeURIComponent(type)}` : '';
+    QUERY = '/api/feedback/filteredType' + query;
+
+    fetch(QUERY)
+      .then(res => res.json())
+      .then(datas => 
+      {
+        if (datas.length === 0) {
+          return;
+        }  
+
+        data.types[type] = datas.length;
+        /*data.forEach(year => {
+        });*/
+      });
+  }
+    
+  function fetchDataYear(value, year)
+  {
+    const query = value ? `?yearCreated=${encodeURIComponent(value)}` : '';
+    QUERY = '/api/feedback/filteredYear' + query;
+
+    fetch(QUERY)
+      .then(res => res.json())
+      .then(datas => 
+      {
+        if (datas.length === 0) {
+          return;
+        }  
+
+        data.yearly.values[year] = datas.length;
+        /*data.forEach(year => {
+        });*/
+      });
+  }
+    
+  function loadData()
+  {
+    //monthly data load
+    fetchDataMonth('1', 0); 
+    fetchDataMonth('2', 1); 
+    fetchDataMonth('3', 2); 
+    fetchDataMonth('4', 3); 
+    fetchDataMonth('5', 4); 
+    fetchDataMonth('6', 5); 
+    fetchDataMonth('7', 6); 
+    fetchDataMonth('8', 7); 
+    fetchDataMonth('9', 8); 
+    fetchDataMonth('10', 9); 
+    fetchDataMonth('11', 10); 
+    fetchDataMonth('12', 11); 
+    //type data
+    fetchDataType('1'); 
+    fetchDataType('2'); 
+    fetchDataType('3'); 
+    fetchDataType('4'); 
+    fetchDataType('5'); 
+    fetchDataType('6'); 
+    fetchDataType('7'); 
+    fetchDataType('8'); 
+    fetchDataType('9'); 
+    fetchDataType('10'); 
+    fetchDataType('11'); 
+    fetchDataType('12'); 
+    fetchDataType('13'); 
+    //year data
+    fetchDataYear('2020', 0); 
+    fetchDataYear('2021', 1); 
+    fetchDataYear('2022', 2); 
+    fetchDataYear('2023', 3); 
+    fetchDataYear('2024', 4); 
+    fetchDataYear('2025', 5); 
+    
+    updateCharts();
+
+  }
+  
+  // Grafikleri güncelle
+  function updateCharts() {
+    const viewType = document.getElementById('viewFilter').value;
+    
+    // Tür dağılımı verisi
+    const typeValues = feedbackTypes.map(type => data.types[type.id]);
+    const typeLabels = feedbackTypes.map(type => type.label);
+    
+    // Renkler
+    const backgroundColors = feedbackTypes.map((type, index) => {
+      const hue = (index * 25) % 360;
+      return `hsla(${hue}, 80%, 60%, 0.7)`;
+    });
+    
+    // Zaman verisi
+    const timeData = viewType === 'yearly' ? data.yearly : data.monthly;
+    
+    // Grafikleri güncelle
+    updateBarChart(typeLabels, typeValues, backgroundColors);
+    updatePieChart(typeLabels, typeValues, backgroundColors);
+    updateLineChart(timeData.labels, timeData.values, viewType);
+    
+    // İstatistikleri güncelle
+    updateStats(data.types, typeValues);
+    updateTable(data.types);
+  }
+  
+  // Çubuk grafiği güncelle
+  function updateBarChart(labels, values, colors) {
+    if (typeBarChart) typeBarChart.destroy();
+    
+    typeBarChart = new Chart(
+      document.getElementById('typeBarChart'),
+      {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Bildirim Sayısı',
+            data: values,
+            backgroundColor: colors,
+            borderColor: colors.map(c => c.replace('0.7', '1')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false, labels: { color: '#f5f5f5' } },
+            title: {
+              display: true,
+              text: 'Geribildirim Türlerine Göre Dağılım',
+              color: '#f5f5f5'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#f5f5f5' },
+              grid: { color: 'rgba(255, 255, 255, 0.1)' }
+            },
+            x: {
+              ticks: { color: '#f5f5f5' },
+              grid: { color: 'rgba(255, 255, 255, 0.1)' }
+            }
+          }
+        }
+      }
+    );
+  }
+  
+  // Pasta grafiği güncelle
+  function updatePieChart(labels, values, colors) {
+    if (typePieChart) typePieChart.destroy();
+    
+    typePieChart = new Chart(
+      document.getElementById('typePieChart'),
+      {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: colors.map(c => c.replace('0.7', '1')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                boxWidth: 12,
+                font: { size: 10 },
+                color: '#f5f5f5'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Yüzde Dağılım',
+              color: '#f5f5f5'
+            }
+          }
+        }
+      }
+    );
+  }
+  
+  // Çizgi grafiği güncelle
+    function updateLineChart(labels, values, viewType) {
+        // Eski grafiği tamamen yok etmeyi zorla
+        if (timeLineChart) {
+            timeLineChart.destroy();
+            document.getElementById('timeLineChart').getContext('2d').clearRect(
+                0, 0, 
+                document.getElementById('timeLineChart').width,
+                document.getElementById('timeLineChart').height
+            );
+        }
+        
+        // Yenilemeyi sağlamak için uygun animasyon seçeneklerini ayarla
+        timeLineChart = new Chart(
+            document.getElementById('timeLineChart'),
+            {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Toplam Bildirim',
+                        data: values,
+                        borderColor: '#ff8102',
+                        backgroundColor: 'rgba(255, 129, 2, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 500 // Daha iyi kullanıcı geri bildirimi için daha hızlı animasyon
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#f5f5f5' } },
+                        title: {
+                            display: true,
+                            text: viewType === 'yearly' ? 'Yıllara Göre Bildirim Sayıları' : 'Aylara Göre Bildirim Sayıları',
+                            color: '#f5f5f5'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#f5f5f5' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#f5f5f5' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            }
+        );
+        
+        // Verilerin değiştiğini doğrulamak için hata ayıklama ekleyin
+        console.log("Grafik şu verilerle güncellendi:", viewType, values);
+    }
+  
+  // İstatistikleri güncelle
+  function updateStats(typeData, values) {
+    // Toplam bildirim sayısı
+    const total = values.reduce((acc, val) => acc + val, 0);
+    document.getElementById('totalFeedbacks').textContent = total;
+    
+    // Aylık ortalama
+    document.getElementById('avgMonthly').textContent = Math.round(total / 12);
+    
+    // En çok bildirilen tür
+    let maxType = '';
+    let maxCount = 0;
+    feedbackTypes.forEach(type => {
+      if (typeData[type.id] > maxCount) {
+        maxCount = typeData[type.id];
+        maxType = type.label;
+      }
+    });
+    document.getElementById('mostCommonType').textContent = maxType;
+    
+  }
+  
+  // Tabloyu güncelle
+  function updateTable(typeData) {
+    const tableBody = document.getElementById('feedbackTypeTable');
+    tableBody.innerHTML = '';
+    
+    // Toplam hesapla
+    const total = Object.values(typeData).reduce((acc, val) => acc + val, 0);
+    
+    feedbackTypes.forEach(type => {
+      const count = typeData[type.id];
+      const percent = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+      
+      // Değişim - rastgele +/- değer
+      const change = Math.floor(Math.random() * 40) - 20; // -20 ile +20 arası
+      
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td style="padding: 10px;">${type.label}</td>
+        <td style="padding: 10px; text-align: center;">${count}</td>
+        <td style="padding: 10px; text-align: center;">%${percent}</td>
+        <td style="padding: 10px; text-align: center; color: ${change >= 0 ? '#4CAF50' : '#F44336'};">
+          ${change >= 0 ? '+' : ''}${change}%
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+  
+  // Event listeners
+  document.getElementById('viewFilter').addEventListener('change', updateCharts);
+  
+  window.addEventListener('DOMContentLoaded', function() {
+      // İlk grafik kurulumu
+      loadData();
+      updateCharts();
+      
+      // Açık bir konsol mesajı ekle
+      console.log("Grafikler başlatıldı");
+  });
+</script>
+</body>
+</html>

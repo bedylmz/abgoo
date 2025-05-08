@@ -14,25 +14,40 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
-    <a href="CargoStatus.html">Kargo Durum</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
   </nav>
 
-  <main>
-    <div class="card">
-    <h1 class="simpleHeader" style="display: block">Kargo Dağıtılacaklar</h1>
   
-    <div class="input-group">
-      <input type="text" id="itemInput" class="primaryInput" placeholder="Enter item...">
-      <button class="primaryButton" onclick="addItem()">Add</button>
-    </div>
+  <main id = "main01">
+    <div class="card">
+      <div class="simpleHeader">Kargo Dağıtım Sistemi</div>
+      <form class="leftAlignForm" onsubmit="logIn(event)">
+        <label class="simpleLabel" for="inputTC">T.C. Kimlik No</label>
+        <input type="text" id="idInput" class="primaryInput" placeholder="01234567890" required>
+        
+        <div>
+        <label class="simpleLabel">Kargocu Türü</label>
+        <select id="type" required class="selectRoundedBlack">
+          <option value="01">Şehir içi</option>
+          <option value="02">Şehirler arası</option>
+        </select>
+      </div>
+        
+        <button type="submit" class="primaryButton" style="width: 100%">Giriş Yap</button>
+      </form>
 
-    <ul id="itemList"></ul>
-  </div>
+      <div id="resultBox" class="result" style="display: none;">
+        Sonuç burada gösterilecek.
+      </div>
+    </div>
   </main>
   
   <footer>
@@ -41,11 +56,8 @@
   
 
   <script>
-    function addItem() {
-      const input = document.getElementById("itemInput");
-      const text = input.value.trim();
-      if (text === "") return;
-
+    /**/
+    function addItem(cargo) {
       const li = document.createElement("li");
       
       //span for all li content
@@ -54,15 +66,13 @@
       
       //text infos
       const label = document.createElement("h3");
-      label.textContent = text;
+      label.textContent = cargo.customerName;
       label.className = "cargoLabel";
       
       //span for text and extend button
       const upper = document.createElement("span");
       upper.className = "infoBox";
       upper.appendChild(label);
-      
-      
       
       //span for details 
       const details = document.createElement("span");
@@ -75,14 +85,13 @@
       //text for details
       const info = document.createElement("p");
       info.className = "simpleLabel";
-      info.textContent = "Kargo Detayları";
+      info.textContent = cargo.address;
       //text for details
       const info2 = document.createElement("p");
-      info2.textContent = "Kargo Detayları alt başlık";
+      info2.textContent = cargo.id;
       
       textSpan.appendChild(info);
       textSpan.appendChild(info2);
-      
       
       
       //spans for delivering buttons
@@ -116,7 +125,6 @@
       };
       
       
-      
       const collapseButton = document.createElement("button");
       collapseButton.className = "primaryButton";
       collapseButton.textContent = "/\\";
@@ -125,13 +133,132 @@
         upper.replaceChild(expandButton, collapseButton);
       };
       
-      
-      
-      
       li.appendChild(front);
       
       document.getElementById("itemList").appendChild(li);
-      input.value = "";
+      //input.value = "";
+    }
+    
+    function renderList(typeOfWorker, workerID)
+    { 
+      if(typeOfWorker === "01")
+      {
+        const query = `?deliverymanId=${encodeURIComponent(workerID)}`;
+        fetch('/api/cargos/filteredDelivery'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              return;
+            }
+            data.forEach(cargo => {
+            addItem(cargo);
+          });
+        });
+      }
+      else 
+      {
+        const query = `?carrierID=${encodeURIComponent(workerID)}`;
+        fetch('/api/cargos/filteredCarrier'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              return;
+            }
+            data.forEach(cargo => {
+            addItem(cargo);
+          });
+        });
+      }
+    }
+    
+    function logIn(event) {
+      event.preventDefault();
+
+      const resultBox = document.getElementById("resultBox");
+      const typeOfWorker = document.getElementById("type").value;
+      
+      const id = document.getElementById("idInput").value;
+      const query = `?id=${encodeURIComponent(id)}`;
+      
+      if(typeOfWorker === "01")
+      {
+        fetch('/api/deliverymen/filteredID'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              // Giriş başarısız
+              resultBox.className = "result error";
+              resultBox.style.display = "block";
+              resultBox.innerHTML = "T.C. Kimlik No hatalı!";
+              return;
+            }
+            const worker = data[0];
+            // Giriş başarılı
+            resultBox.className = "result success";
+            resultBox.style.display = "block";
+            resultBox.innerHTML = "Giriş başarılı! Yönlendiriliyorsunuz...";
+         
+            const oldMain = document.getElementById('main01');
+            const newMain = document.createElement('main');
+         
+            newMain.innerHTML = `
+            <div class="card">
+              <h1 class="simpleHeader" style="display: block">Kargo Dağıtılacaklar</h1>
+
+              <ul id="itemList"></ul>
+            </div>
+            `;
+            // 1 saniye sonra PersonnelManagement sayfasına yönlendir
+            setTimeout(() => {
+              document.body.replaceChild(newMain, oldMain);
+              renderList(typeOfWorker, worker.id)
+            }, 1000);
+        });
+        
+      }
+      else
+      {
+        fetch('/api/carriers/filteredID'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              // Giriş başarısız
+              resultBox.className = "result error";
+              resultBox.style.display = "block";
+              resultBox.innerHTML = "T.C. Kimlik No hatalı!";
+              return;
+            }
+            const worker = data[0];
+            // Giriş başarılı
+            resultBox.className = "result success";
+            resultBox.style.display = "block";
+            resultBox.innerHTML = "Giriş başarılı! Yönlendiriliyorsunuz...";
+         
+            const oldMain = document.getElementById('main01');
+            const newMain = document.createElement('main');
+         
+            newMain.innerHTML = `
+            <div class="card">
+              <h1 class="simpleHeader" style="display: block">Taşınanlar</h1>
+
+              <ul id="itemList"></ul>
+            </div>
+            `;
+            // 1 saniye sonra PersonnelManagement sayfasına yönlendir
+            setTimeout(() => {
+              document.body.replaceChild(newMain, oldMain);
+              renderList(typeOfWorker, worker.id)
+            }, 1000);
+          });
+      }
     }
   </script>
 </body>

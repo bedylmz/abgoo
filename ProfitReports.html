@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gelir/Gider Raporları</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .report-container {
+            background-color: var(--incard);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: var(--textBackground);
+            padding: 15px;
+            border-radius: var(--radius);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: var(--primarylight);
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background-color: var(--textBackground);
+            padding: 15px;
+            border-radius: var(--radius);
+            flex: 1;
+            min-width: 120px;
+            margin: 5px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <main>
+    <div class="card" style="max-width: 900px;">
+      <div class="simpleHeader">Gelir/Gider Raporları</div>
+      
+      <!-- Filtreleme Seçenekleri -->
+      <div class="filter-container">
+        <div class="filter-group">
+          <span class="filter-label">Görünüm:</span>
+          <select id="viewFilter" class="selectRoundedBlack" style="margin-bottom: 0;">
+            <option value="monthly">Aylık</option>
+            <option value="yearly">Yıllık</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Özet İstatistikler -->
+      <div class="stats-container">
+        <div class="stat-box">
+          <div class="stat-number" id="totalIncome">₺0</div>
+          <div class="stat-label">Toplam Gelir</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="totalExpense">₺0</div>
+          <div class="stat-label">Toplam Gider</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="totalProfit">₺0</div>
+          <div class="stat-label">Brüt Kâr</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="profitMargin">0%</div>
+          <div class="stat-label">Kâr Marjı</div>
+        </div>
+      </div>
+      
+      <!-- Gelir-Gider Çubuk Grafiği -->
+      <div class="middleLabel">Gelir ve Gider Dağılımı</div>
+      <div class="report-container">
+        <div class="chart-container">
+          <canvas id="incomeExpenseChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Brüt Kâr Çizgi Grafiği -->
+      <div class="middleLabel">Brüt Kâr Trendi</div>
+      <div class="report-container">
+        <div class="chart-container">
+          <canvas id="profitChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Finansal Özet Tablosu -->
+      <div class="middleLabel">Finansal Performans Özeti</div>
+      <div class="report-container" style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: var(--textBackground);">
+              <th style="padding: 10px; text-align: left;">Dönem</th>
+              <th style="padding: 10px; text-align: right;">Gelir</th>
+              <th style="padding: 10px; text-align: right;">Gider</th>
+              <th style="padding: 10px; text-align: right;">Kâr</th>
+              <th style="padding: 10px; text-align: right;">Kâr Marjı</th>
+              <th style="padding: 10px; text-align: center;">Değişim</th>
+            </tr>
+          </thead>
+          <tbody id="financialTable">
+            <!-- JavaScript ile doldurulacak -->
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </main>
+  
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+
+  <script>
+    // Veri setleri - 3 yıllık rastgele veriler
+    const financialData = {
+        // Aylık veriler (2024 yılı için)
+        monthly: {
+            labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+            income: [120000, 135000, 142000, 128000, 145000, 157000, 163000, 155000, 168000, 172000, 175000, 183000],
+            expense: [85000, 92000, 95000, 88000, 98000, 105000, 110000, 103000, 112000, 115000, 118000, 125000]
+        },
+        // Yıllık veriler (2022-2024)
+        yearly: {
+            labels: ['2022', '2023', '2024'],
+            income: [1250000, 1580000, 1843000],
+            expense: [850000, 1120000, 1246000]
+        }
+    };
+    
+    // Para birimini formatla (₺ ekler ve binlik ayırır)
+    const formatCurrency = (value) => {
+        return '₺' + value.toLocaleString('tr-TR');
+    };
+    
+    // Gelir-Gider Çubuk Grafiği
+    let incomeExpenseChart;
+    function updateBarChart(labels, incomeData, expenseData) {
+        if (incomeExpenseChart) {
+            incomeExpenseChart.destroy();
+        }
+        
+        const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+        incomeExpenseChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Gelir',
+                        data: incomeData,
+                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                        borderColor: 'rgb(76, 175, 80)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Gider',
+                        data: expenseData,
+                        backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                        borderColor: 'rgb(244, 67, 54)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#f5f5f5' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += formatCurrency(context.raw);
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { 
+                            color: '#f5f5f5',
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#f5f5f5' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Brüt Kâr Çizgi Grafiği
+    let profitChart;
+    function updateLineChart(labels, profitData) {
+        if (profitChart) {
+            profitChart.destroy();
+        }
+        
+        const ctx = document.getElementById('profitChart').getContext('2d');
+        profitChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Brüt Kâr',
+                    data: profitData,
+                    borderColor: '#2196F3',
+                    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                    pointBackgroundColor: '#2196F3',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { color: '#f5f5f5' } 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += formatCurrency(context.raw);
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { 
+                            color: '#f5f5f5',
+                            callback: function(value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#f5f5f5' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+    }
+    
+    // İstatistikleri güncelle
+    function updateStats(incomeData, expenseData) {
+        // Toplam değerleri hesapla
+        const totalIncome = incomeData.reduce((a, b) => a + b, 0);
+        const totalExpense = expenseData.reduce((a, b) => a + b, 0);
+        const totalProfit = totalIncome - totalExpense;
+        const profitMargin = (totalProfit / totalIncome * 100).toFixed(1);
+        
+        // İstatistikleri güncelle
+        document.getElementById('totalIncome').textContent = formatCurrency(totalIncome);
+        document.getElementById('totalExpense').textContent = formatCurrency(totalExpense);
+        document.getElementById('totalProfit').textContent = formatCurrency(totalProfit);
+        document.getElementById('profitMargin').textContent = profitMargin + '%';
+    }
+    
+    // Tabloyu güncelle
+    function updateTable(labels, incomeData, expenseData) {
+        const tableBody = document.getElementById('financialTable');
+        tableBody.innerHTML = '';
+        
+        // Her dönem için bir satır oluştur
+        for (let i = 0; i < labels.length; i++) {
+            const income = incomeData[i];
+            const expense = expenseData[i];
+            const profit = income - expense;
+            const margin = (profit / income * 100).toFixed(1);
+            
+            // Bir önceki döneme göre değişim (yüzde) - ilk dönem için N/A
+            let change = 'N/A';
+            let changeColor = '';
+            
+            if (i > 0) {
+                const prevProfit = incomeData[i-1] - expenseData[i-1];
+                const changePercent = ((profit - prevProfit) / Math.abs(prevProfit) * 100).toFixed(1);
+                change = changePercent >= 0 ? '+' + changePercent + '%' : changePercent + '%';
+                changeColor = changePercent >= 0 ? '#4CAF50' : '#F44336';
+            }
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="padding: 10px; text-align: left;">${labels[i]}</td>
+                <td style="padding: 10px; text-align: right;">${formatCurrency(income)}</td>
+                <td style="padding: 10px; text-align: right;">${formatCurrency(expense)}</td>
+                <td style="padding: 10px; text-align: right;">${formatCurrency(profit)}</td>
+                <td style="padding: 10px; text-align: right;">%${margin}</td>
+                <td style="padding: 10px; text-align: center; color: ${changeColor};">${change}</td>
+            `;
+            tableBody.appendChild(row);
+        }
+    }
+    
+    // Grafikleri güncelle
+    function updateCharts() {
+        const viewType = document.getElementById('viewFilter').value;
+        const data = financialData[viewType];
+        
+        // Brüt kâr verilerini hesapla
+        const profitData = data.income.map((inc, idx) => inc - data.expense[idx]);
+        
+        // Grafikleri güncelle
+        updateBarChart(data.labels, data.income, data.expense);
+        updateLineChart(data.labels, profitData);
+        
+        // İstatistikleri güncelle
+        updateStats(data.income, data.expense);
+        
+        // Tabloyu güncelle
+        updateTable(data.labels, data.income, data.expense);
+    }
+    
+    // Event listener - görünüm değiştiğinde
+    document.getElementById('viewFilter').addEventListener('change', updateCharts);
+    
+    // Sayfa yüklendiğinde grafikleri oluştur
+    window.addEventListener('DOMContentLoaded', function() {
+        updateCharts();
+    });
+  </script>
+</body>
+</html>

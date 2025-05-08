@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Cargo</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Hide the spin buttons in WebKit browsers */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Hide spin buttons in Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    </style>
+</head>
+    
+<body>
+  
+    <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
+  </nav>
+
+  <main>
+    <div id = "mainBlock" class="card">
+    <h1 class="simpleHeader">Şube Kayıt</h1>
+    <form class="leftAlignForm" action="/add-section" method="POST">
+      
+      <div>
+        <label class="simpleLabel">Şube Adı</label>
+        <input type="text" name="name" class="primaryInput">
+      </div>
+      
+      <div>
+        <label  class="simpleLabel">Şube ID</label>
+        <input type="text" id="idBlock" name="id" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Adresi</label>
+        <input type="text" name="location" class="primaryInput">
+      </div>
+    
+      <button type="submit" class="primaryButton" style="width: 100%">
+        Kaydet
+      </button>
+        
+    </form>
+      
+    <button onclick="loadSections()" class="primaryButton" style="width: 100%">
+      load
+    </button>
+      
+  </div>
+  </main>
+  
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+  
+  
+  <script>
+      function loadSections() {
+      const id = document.getElementById('idBlock').value;
+      const query = id ? `?id=${encodeURIComponent(id)}` : '';
+      fetch('/api/sections/filtered'+ query)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('mainBlock');
+          container.innerHTML = '<h3>Section List</h3>';
+          if (data.length === 0) {
+            container.innerHTML += '<p>No Sections found.</p>';
+            return;
+          }
+
+          let table = '<table border="1"><tr><th>ID</th><th>Description</th><th>Weight</th></tr>';
+          data.forEach(c => {
+            table += `<tr>
+              <td>${c.id}</td>
+              <td>${c.name}</td>
+              <td>${c.location}</td>
+            </tr>`;
+          });
+          table += '</table>';
+          container.innerHTML += table;
+        });
+    }
+  </script>
+</body>
+</html>

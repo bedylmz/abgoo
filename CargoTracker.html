@@ -5,7 +5,6 @@
     <title>Kargo Takip</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
 </head>
 <body>
   <header>
@@ -15,25 +14,216 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
-    <a href="CargoStatus.html">Kargo Durum</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
   </nav>
 
-  <main>
-    <div class="card">
+  <main id="main01">
+    <div id = "mainBlock" class="card">
       <h2 class="simpleHeader">Kargo Takip </h2>
-      <input type="text" id="cargoIdInput" class="primaryInput" placeholder="Enter Cargo ID">
+      <input type="text" id="cargoIdInput" class="primaryInput">
       <button onclick="searchCargo()" class="primaryButton">Search</button>
-      <div id="result" class="result" style="display:none;"></div>
+      
     </div>
   </main>
   
   <footer>
     &copy; 2025 My Website
   </footer>
+  
+  <script>
+    function searchCargo() 
+    {
+      
+      const id = document.getElementById('cargoIdInput').value;
+      const query = `?id=${id}`;
+      
+      const container = document.getElementById('mainBlock');
+      
+      if(id === "")
+      {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "result";
+        errorDiv.textContent = "Kargo Bulunamadı";
+        container.appendChild(errorDiv);
+
+        setTimeout(() => {
+          container.removeChild(errorDiv);
+        }, 3000);
+      }
+      else
+      {
+        fetch('/api/cargos/filtered'+ query)
+          .then(res => res.json())
+          .then(data => 
+          {
+            if (data.length === 0) 
+            {
+              const errorDiv = document.createElement("div");
+              errorDiv.className = "result";
+              errorDiv.textContent = "Kargo Bulunamadı";
+              container.appendChild(errorDiv);
+
+              setTimeout(() => {
+                container.removeChild(errorDiv);
+              }, 3000);
+              return;
+            }
+            const cargo = data[0]; 
+            const oldMain = document.getElementById('main01');
+            const newMain = document.createElement('main');
+            
+            var from;
+            if (cargo.fromWhere === 1)
+            {
+              from = "Adana";
+            }
+            else if (cargo.fromWhere === 2)
+            {
+              from = "Ankara";
+            }
+            else if (cargo.fromWhere === 3)
+            {
+              from = "Antalya";
+            }
+            else if (cargo.fromWhere === 4)
+            {
+              from = "İstanbul";
+            }
+            else if (cargo.fromWhere === 5)
+            {
+              from = "İzmir";
+            }
+            else if (cargo.fromWhere === 6)
+            {
+              from = "Kocaeli";
+            }
+            else if (cargo.fromWhere === 7)
+            {
+              from = "Muğla";
+            }
+            else
+            {
+              from = "Unknown";
+            }
+          
+            var to;
+            if (cargo.toWhere === 1)
+            {
+              to = "Adana";
+            }
+            else if (cargo.toWhere === 2)
+            {
+              to = "Ankara";
+            }
+            else if (cargo.toWhere === 3)
+            {
+              to = "Antalya";
+            }
+            else if (cargo.toWhere === 4)
+            {
+              to = "İstanbul";
+            }
+            else if (cargo.toWhere === 5)
+            {
+              to = "İzmir";
+            }
+            else if (cargo.toWhere === 6)
+            {
+              to = "Kocaeli";
+            }
+            else if (cargo.toWhere === 7)
+            {
+              to = "Muğla";
+            }
+            else
+            {
+              to = "Unknown";
+            }
+          
+            newMain.innerHTML = 
+              `
+              <div class="card" style="min-width: 800px;">
+                  <h2 class="simpleHeader">Kargo Durum</h2>
+                  <div class="cardflex" style="display: inline-block"><b>#️⃣Kargo Numarası:</b><br><br>${cargo.id}</div>
+                  <div class="cardflex" style="display: inline-block"><b>📅Tahmini Teslimat:</b><br><br>${cargo.ETA}</div>
+                  <div class="cardflex" style="display: inline-block"><b>👤Alıcı Adı:</b><br><br>${cargo.receiverName}</div>
+                  <div class="cardflex" style="display: inline-block"><b>📅Gönderi Çıkış Tarihi:</b><br><br>${cargo.createdAt}</div>
+
+
+                  <div class="cardflex" style="display: block">
+                      <b style="font-size: x-large">ℹ️Gönderi Detayları</b><br><br>
+                      <div style="text-align: left; padding: 2rem;">
+                          <b>Alıcı Adresi:</b><br>
+                          ${cargo.address}
+                          <br><br>
+                          <b>Çıkış Birimi:</b><br>
+                          ${from}
+                          <br><br>
+                          <b>Teslimat Birimi:</b><br>
+                          ${to}
+                          <br><br>
+                          <b>Gönderici Adı:</b><br>
+                          ${cargo.customerName}
+                          <br><br>
+                          <b>Kargo Boyutu & Ağırlığı:</b><br>
+                          ${cargo.volume} cm3, ${cargo.mass} kg,
+
+                      </div>
+                  </div>
+
+                  <div class="cardflex" style="display: block;">
+                      <b style="font-size: x-large">🚚Gönderi Hareketleri</b><br><br>
+                      <div style="text-align: left; padding: 2rem;">
+                          <b>Alıcı Adresi:</b><br>
+                          Çubuk Ovası, Ankara
+                          <br><br>
+                          <b>Çıkış Birimi:</b><br>
+                          Çubuk Ovası, Ankara
+                          <br><br>
+                          <b>Teslimat Birimi:</b><br>
+                          Ankara
+                          <br><br>
+                          <b>Gönderici Adı:</b><br>
+                          Timurlenk
+                          <br><br>
+                          <b>Gönderici Türü:</b><br>
+                          1 Adet Dosya * 0 Desi
+
+                      </div>
+                  </div>
+
+                  <button type="button" class="primaryButton" style="width: 48%; display: inline-block">
+                      Teslimat Gününü Değişitir
+                  </button>
+
+                  <button type="button" onclick="myFunction()" class="popup primaryButton" style="width: 48%; display: inline-block">
+                      İade Oluştur
+                      <span>
+                          <span class="popupcontent" id="acceptPopup" style="text-align: center">İade Onaylandı.<br>Kargo Numarasını İade Kodu olarak kullanabilirsiniz.</span>
+                          <span class="popupcontent" id="declinePopup" style="text-align: center; background-color: var(--error);">İadeniz Oluşturulamadı Lütfen Şartları Sağladığınızdan Emin Olun.</span>
+                      </span>
+                  </button>
+              </div>
+              `;
+
+            document.body.replaceChild(newMain, oldMain);
+          });
+      }
+    }
+    
+    function myFunction() {
+      var popup = document.getElementById("declinePopup");
+      popup.classList.toggle("show");
+    }
+    </script>
+    
 </body>
 </html>

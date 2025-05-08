@@ -1,0 +1,15 @@
+{
+  "name": "simple-cargo-management",
+  "version": "1.0.0",
+  "description": "Simple cargo management system",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.14.1"
+  }
+}

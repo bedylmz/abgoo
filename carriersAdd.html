@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Cargo</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Hide the spin buttons in WebKit browsers */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Hide spin buttons in Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    </style>
+</head>
+    
+<body>
+  
+    <header>
+    <img src="logo.png" alt="Description of image" width="410" height="160">
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
+    <a href="CargoTracker.html">Kargo Takip</a>
+    <a href="CargoRegister.html">Kargo Kayıt</a>
+    <a href="CargoDistribute.html">Kargo Dağıtım</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
+  </nav>
+
+  <main>
+    <div class="card">
+    <h1 class="simpleHeader">Taşıyıcı Kayıt</h1>
+    <form class="leftAlignForm" action="/add-carrier" method="POST">
+      
+      <div>
+        <label class="simpleLabel">Adı Soyadı</label>
+        <input type="text" name="name" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Kimlik No</label>
+        <input type="number" name="id" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Telefon Numarası</label>
+        <input type="number" name="phone" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Günlük Ücret</label>
+        <input type="number" name="dailyRate" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Çalışma Günü (Aylık)</label>
+        <input type="number" name="workedDayMontly" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Kargo Aldığı Şubenin IDsi</label>
+        <input type="number" name="workPlace" class="primaryInput">
+      </div>
+      
+      <div>
+        <label class="simpleLabel">Kargo Teslim Ettiği Şubenin IDsi</label>
+        <input type="number" name="whereToGo" class="primaryInput">
+      </div>
+      
+      
+      <button type="submit" class="primaryButton" style="width: 100%">
+        Kaydet
+      </button>
+        
+    </form>
+  </div>
+  </main>
+  
+  <footer>
+    &copy; 2025 My Website
+  </footer>
+  
+  <script>
+        
+    document.getElementById("calculateButton").addEventListener("click", 
+    function() {
+      console.log("Registered Site:");
+    });
+    /*
+    const selectElement = document.querySelector('select[name="location11"]');
+    const display = document.getElementById("location1");
+    const location2HTML = `
+        <label class="simpleLabel">İlçe</label>
+        <select name="location21" required class="selectRoundedBlack">
+          <option value="34">İstanbul</option>
+          <option value="06">Ankara</option>
+          <option value="35">İzmir</option>
+          <option value="48">Muğla</option>
+        </select>`;
+    
+    selectElement.addEventListener
+    ("change", function () 
+      {
+        const value = this.value;
+        if (value == "34") 
+        {
+          display.innerHTML = location2HTML;
+        } 
+        else
+        {
+          //console.log("Hello Bastard");
+          //console.log(display.className);
+        }
+        console.log(value);
+      });
+    */
+    
+    /*
+    document.getElementById("siteForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const form = event.target;
+      const data = {
+        name: form.name.value,
+        location: form.location.value,
+        role: form.role.value,
+        capacity: form.capacity.value,
+        status: form.status.value
+      };
+      console.log("Registered Site:", data);
+      document.getElementById("confirmation").classList.remove("hidden");
+      form.reset();
+    });*/
+  </script>
+</body>
+</html>

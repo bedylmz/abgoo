@@ -14,145 +14,90 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
-    <a href="CargoStatus.html">Kargo Durum</a>
-    <a href="Feedback.html">Memnuniyet</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
   </nav>
 
   <main>
     <div class="card">
       <div class="simpleHeader">Müşteri Geribildirim Formu</div>
-
-      <form class="leftAlignForm" id="feedbackForm">
-        <div>
-          <label class="simpleLabel" style="display: inline-flex; align-items: center; cursor: pointer;">
-            <input type="checkbox" id="anonymousCheck" style="margin-right: 8px;">
-            Anonim olarak gönder
-          </label>
-        </div>
-
-        <div id="personalInfoSection">
-          <div>
-            <label class="simpleLabel" for="name">Ad Soyad</label>
-            <input type="text" id="name" name="name" class="primaryInput" required>
-          </div>
-
-          <div>
-            <label class="simpleLabel" for="email">E-posta</label>
-            <input type="email" id="email" name="email" class="primaryInput" required>
-          </div>
-
-          <div>
-            <label class="simpleLabel" for="phone">Telefon</label>
-            <input type="tel" id="phone" name="phone" class="primaryInput">
-          </div>
-        </div>
-
+      
+      <form class="leftAlignForm" id="feedbackForm" action="/add-feedback" method="POST">
         <div>
           <label class="simpleLabel" for="feedbackType">Geribildirim Türü</label>
-          <select id="feedbackType" name="feedbackType" class="selectRoundedBlack" required>
+          <select id="feedbackType" name="type" class="selectRoundedBlack" required>
             <option value="">Seçiniz</option>
-            <option value="late_delivery">Geç Teslimat</option>
-            <option value="damaged_cargo">Hasarlı Kargo</option>
-            <option value="lost_cargo">Kayıp Kargo</option>
-            <option value="courier_behavior">Kurye Davranışı</option>
-            <option value="branch_service">Şube Hizmeti</option>
-            <option value="customer_service">Müşteri Hizmetleri</option>
-            <option value="app_website">Uygulama/Web Sitesi</option>
-            <option value="pricing">Fiyatlandırma</option>
-            <option value="delivery_speed">Teslimat Süresi/Hızı</option>
-            <option value="tracking_system">Kargo Takip Sistemi</option>
-            <option value="service_quality">Hizmet Kalitesi</option>
-            <option value="general_suggestion">Genel Öneri</option>
-            <option value="other">Diğer</option>
+            <option value="1">Geç Teslimat</option>
+            <option value="2">Hasarlı Kargo</option>
+            <option value="3">Kayıp Kargo</option>
+            <option value="4">Kurye Davranışı</option>
+            <option value="5">Şube Hizmeti</option>
+            <option value="6">Müşteri Hizmetleri</option>
+            <option value="7">Uygulama/Web Sitesi</option>
+            <option value="8">Fiyatlandırma</option>
+            <option value="9">Teslimat Süresi/Hızı</option>
+            <option value="10">Kargo Takip Sistemi</option>
+            <option value="11">Hizmet Kalitesi</option>
+            <option value="12">Genel Öneri</option>
+            <option value="13">Diğer</option>
           </select>
         </div>
-
-        <div>
-          <label class="simpleLabel" for="cargoNumber">Kargo Takip Numarası (Opsiyonel)</label>
-          <input type="text" id="cargoNumber" name="cargoNumber" class="primaryInput">
-        </div>
-
+        
         <div>
           <label class="simpleLabel" for="subject">Konu</label>
           <input type="text" id="subject" name="subject" class="primaryInput" required>
         </div>
-
+        
         <div>
           <label class="simpleLabel" for="message">Mesajınız</label>
-          <textarea id="message" name="message" class="primaryInput" style="min-height: 150px; resize: vertical;" required></textarea>
+          <textarea id="message" name="explaination" class="primaryInput" style="min-height: 150px; resize: vertical;" required></textarea>
         </div>
-
+        
         <div style="margin-top: 20px;">
           <button type="submit" class="primaryButton">Gönder</button>
         </div>
       </form>
-
+      
       <div id="resultMessage" class="result" style="display: none;">
         Geribildiriminiz için teşekkür ederiz. En kısa sürede değerlendirilecektir.
       </div>
     </div>
   </main>
-
+  
   <footer>
     &copy; 2025 My Website
   </footer>
 
   <script>
-    // Anonim gönderim için checkbox kontrol
-    const anonymousCheck = document.getElementById('anonymousCheck');
-    const personalInfoSection = document.getElementById('personalInfoSection');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-
-    // Checkbox değişimini izle
-    anonymousCheck.addEventListener('change', function() {
-      if (this.checked) {
-        // Anonim mod aktif
-        personalInfoSection.style.display = 'none';
-        nameInput.required = false;
-        emailInput.required = false;
-        phoneInput.required = false;
-      } else {
-        // Normal mod
-        personalInfoSection.style.display = 'block';
-        nameInput.required = true;
-        emailInput.required = true;
-      }
-    });
-
     // Form gönderimi
+    /*
     document.getElementById('feedbackForm').addEventListener('submit', function(event) {
       event.preventDefault();
-
+      
       // Normalde burada form verileri bir API'ye gönderilir
       // Bu örnek için sadece başarılı gönderim simülasyonu yapıyoruz
-
+      
       // Form alanlarını temizle
       this.reset();
-
-      // Anonim checkbox'ı sıfırla ve kişisel bilgi alanlarını göster
-      anonymousCheck.checked = false;
-      personalInfoSection.style.display = 'block';
-      nameInput.required = true;
-      emailInput.required = true;
-
+      
       // Başarı mesajını göster
       const resultMessage = document.getElementById('resultMessage');
       resultMessage.className = 'result success';
       resultMessage.style.display = 'block';
       resultMessage.textContent = 'Geribildiriminiz için teşekkür ederiz. En kısa sürede değerlendirilecektir.';
-
+      
       // 5 saniye sonra mesajı gizle
       setTimeout(function() {
         resultMessage.style.display = 'none';
       }, 5000);
-    });
+    });*/
   </script>
 </body>
 </html>

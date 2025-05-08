@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Kargo Kayıt</title>
+  <title>Add Cargo</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     /* Hide the spin buttons in WebKit browsers */
@@ -28,18 +28,21 @@
   <nav>
     <a href="index.html">Home</a>
     <a href="login.html">Personel Yönetimi</a>
+    <a href="customerAdd.html">Müşteri Ekle</a>
+    <a href="sectionAdd.html">Şube Ekle</a>
     <a href="CargoTracker.html">Kargo Takip</a>
     <a href="CargoRegister.html">Kargo Kayıt</a>
     <a href="CargoDistribute.html">Kargo Dağıtım</a>
-    <a href="CargoStatus.html">Kargo Durum</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="Feedback.html">Feedback</a>
+    <a href="FeedbackReports.html">Rapor</a>
   </nav>
 
   <main>
     <div class="card">
     <h1 class="simpleHeader">Kargo Kayıt</h1>
-    <form id="siteForm" class="leftAlignForm">
+    <form class="leftAlignForm" action="/add-cargo" method="POST">
       
       <div>
         <label class="middleLabel">Gönderici Bilgileri</label>
@@ -47,17 +50,17 @@
       
       <div>
         <label class="simpleLabel">Adı Soyadı</label>
-        <input type="text" name="sender" class="primaryInput">
+        <input type="text" name="customerName" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Kimlik No</label>
-        <input type="number" name="sender" class="primaryInput">
+        <input type="number" name="customerID" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Telefon Numarası</label>
-        <input type="number" name="sender" class="primaryInput">
+        <input type="number" name="customerPhone" class="primaryInput">
       </div>
       
       <div>
@@ -66,72 +69,64 @@
       
       <div>
         <label class="simpleLabel">Adı Soyadı</label>
-        <input type="text" name="sender" class="primaryInput">
+        <input type="text" name="receiverName" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Telefon Numarası</label>
-        <input type="number" name="sender" class="primaryInput">
+        <input type="number" name="receiverPhone" class="primaryInput">
       </div>
       
       <div>
         <label class="middleLabel">Kargo Bilgileri</label>
       </div>
-        
-      <div>
-        <label class="simpleLabel">İçeriği</label>
-        <select name="content" required class="selectRoundedBlack">
-          <option value="Fragile">Kırılgan</option>
-          <option value="Liquid">Sıvı</option>
-          <option value="Solid">Katı</option>
-          <option value="Electronic">Elektronik</option>
-        </select>
-      </div>
-        
+  
       <div>
         <label class="simpleLabel">Kütlesi</label>
         <input type="number" name="mass" required min="0" class="primaryInput">
       </div>
-        
+
       <div>
-        <label class="simpleLabel">Uzunluğu</label>
-        <input type="number" name="lenght" required min="0" class="primaryInput">
+        <label class="simpleLabel">Hacim</label>
+        <input type="number" name="volume" required min="0" class="primaryInput">
       </div>
-        
+
       <div>
-        <label class="simpleLabel">Genişliği</label>
-        <input type="number" name="width" required min="0" class="primaryInput">
+        <label class="middleLabel">Gönderen Adresi</label>
       </div>
-        
       <div>
-        <label class="simpleLabel">Derinliği</label>
-        <input type="number" name="depth" required min="0" class="primaryInput">
+        <label class="simpleLabel">İl</label>
+        <select name="customerAddress1" required class="selectRoundedBlack">
+          <option value="01">Adana</option>
+          <option value="02">Ankara</option>
+          <option value="03">Antalya</option>
+          <option value="04">İstanbul</option>
+          <option value="05">İzmir</option>
+          <option value="06">Kocaeli</option>
+          <option value="07">Muğla</option>
+        </select>
       </div>
-        
+
       <div>
         <label class="middleLabel">Teslimat Adresi</label>
       </div>
-        
       <div>
         <label class="simpleLabel">İl</label>
-        <input type="text" name="sender" class="primaryInput">
+        <select name="receiverAddress1" required class="selectRoundedBlack">
+          <option value="01">Adana</option>
+          <option value="02">Ankara</option>
+          <option value="03">Antalya</option>
+          <option value="04">İstanbul</option>
+          <option value="05">İzmir</option>
+          <option value="06">Kocaeli</option>
+          <option value="07">Muğla</option>
+        </select>
       </div>
-      
       <div>
-        <label class="simpleLabel">İlçe</label>
-        <input type="text" name="sender" class="primaryInput">
-      </div>
-      
-      <div>
-        <label class="simpleLabel">Mahalle</label>
-        <input type="text" name="sender" class="primaryInput">
-      </div>
-      
-      <div>
-        <label class="simpleLabel">Sokak</label>
-        <input type="text" name="sender" class="primaryInput">
-      </div>
-      
+        <label class="simpleLabel">Açık Adres</label>
+        <input type="text" name="receiverAddress0" class="primaryInput">
+      </div>    
+    
       <div>
         <label id="calculatedPrice" class="middleLabel">0 TL</label>
       </div>
@@ -151,8 +146,6 @@
     &copy; 2025 My Website
   </footer>
   
-  
-
   <script>
         
     document.getElementById("calculateButton").addEventListener("click", 
