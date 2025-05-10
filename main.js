@@ -106,6 +106,9 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+// Parse JSON bodies
+app.use(express.json());
+
 const returnPopup = 
 `
 <!DOCTYPE html>
@@ -420,8 +423,10 @@ app.post('/add-cargo',
     } = req.body;
 
     // Calculate ETA (example: 3 days from now)
-    const ETA = new Date();
-    ETA.setDate(ETA.getDate() + 3);
+    const date = new Date();
+    date.setDate(date.getDate() + 3);
+    const ETA = originalDate.toISOString(); // "2025-05-09T12:45:00.000Z"
+
 
     // Step 1: Get deliverymanId
     const getDeliverymanId = () => {
@@ -490,6 +495,55 @@ app.post('/add-cargo',
       res.status(500).send('❌ Error: ' + error.message);
     }
 });
+
+/*delivered cargo infos*/ 
+app.post('/delivered-cargo', 
+  (req, res) => 
+  {
+  const sql = 'UPDATE cargos SET status = ?, deliverymanId = ? WHERE id = ?';
+  db.query(sql, ['delivered', 0, req.body.id], (err, result) => {
+    if (err) throw err;
+    console.log('Row updated!: ' + req.body.id);
+    //res.send(returnPopup);
+  });
+});
+
+/*delivered cargo infos*/ 
+app.post('/notDelivered-cargo', 
+  (req, res) => 
+  {
+  const sql = 'UPDATE cargos SET status = ?, deliverymanId = ? WHERE id = ?';
+  db.query(sql, ['pending', 0, req.body.id], (err, result) => {
+    if (err) throw err;
+    console.log('Row updated!: ' + req.body.id);
+    //res.send(returnPopup);
+  });
+});
+
+/*postpone cargo infos*/ 
+app.post('/postpone-cargo', 
+  (req, res) => 
+  {
+  const sql = 'UPDATE cargos SET ETA = ? WHERE id = ?';
+  db.query(sql, [req.body.ETA, req.body.id], (err, result) => {
+    if (err) throw err;
+    console.log('ETA: ' + req.body.ETA);
+    //res.send(returnPopup);
+  });
+});
+
+/*refund cargo infos*/ 
+app.post('/postpone-cargo', 
+  (req, res) => 
+  {
+  const sql = 'UPDATE cargos SET ETA = ? WHERE id = ?';
+  db.query(sql, [req.body.ETA, req.body.id], (err, result) => {
+    if (err) throw err;
+    console.log('ETA: ' + req.body.ETA);
+    //res.send(returnPopup);
+  });
+});
+
 
 //show filtered sections
 app.get('/api/cargos/filtered', (req, res) => {

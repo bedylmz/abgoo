@@ -147,20 +147,24 @@
             {
               to = "Unknown";
             }
-          
-            newMain.innerHTML = 
+            const date =  cargo.ETA.slice(0,10);
+            const date2 = cargo.createdAt.slice(0,10);
+            newMain.innerHTML =
               `
               <div class="card" style="min-width: 800px;">
                   <h2 class="simpleHeader">Kargo Durum</h2>
                   <div class="cardflex" style="display: inline-block"><b>#️⃣Kargo Numarası:</b><br><br>${cargo.id}</div>
-                  <div class="cardflex" style="display: inline-block"><b>📅Tahmini Teslimat:</b><br><br>${cargo.ETA}</div>
+                  <div class="cardflex" style="display: inline-block"><b>📅Tahmini Teslimat:</b><br><br>${date}</div>
                   <div class="cardflex" style="display: inline-block"><b>👤Alıcı Adı:</b><br><br>${cargo.receiverName}</div>
-                  <div class="cardflex" style="display: inline-block"><b>📅Gönderi Çıkış Tarihi:</b><br><br>${cargo.createdAt}</div>
+                  <div class="cardflex" style="display: inline-block"><b>📅Gönderi Çıkış Tarihi:</b><br><br>${date2}</div>
 
 
                   <div class="cardflex" style="display: block">
                       <b style="font-size: x-large">ℹ️Gönderi Detayları</b><br><br>
                       <div style="text-align: left; padding: 2rem;">
+                          <b>Kargo Durumu:</b><br>
+                          ${cargo.status}
+                          <br><br>
                           <b>Alıcı Adresi:</b><br>
                           ${cargo.address}
                           <br><br>
@@ -179,29 +183,8 @@
                       </div>
                   </div>
 
-                  <div class="cardflex" style="display: block;">
-                      <b style="font-size: x-large">🚚Gönderi Hareketleri</b><br><br>
-                      <div style="text-align: left; padding: 2rem;">
-                          <b>Alıcı Adresi:</b><br>
-                          Çubuk Ovası, Ankara
-                          <br><br>
-                          <b>Çıkış Birimi:</b><br>
-                          Çubuk Ovası, Ankara
-                          <br><br>
-                          <b>Teslimat Birimi:</b><br>
-                          Ankara
-                          <br><br>
-                          <b>Gönderici Adı:</b><br>
-                          Timurlenk
-                          <br><br>
-                          <b>Gönderici Türü:</b><br>
-                          1 Adet Dosya * 0 Desi
-
-                      </div>
-                  </div>
-
-                  <button type="button" class="primaryButton" style="width: 48%; display: inline-block">
-                      Teslimat Gününü Değişitir
+                  <button type="button" onClick="postpone('${cargo.ETA}', ${cargo.id})" class="primaryButton" style="width: 48%; display: inline-block">
+                      Teslimatı 1 Gün Ertele
                   </button>
 
                   <button type="button" onclick="myFunction()" class="popup primaryButton" style="width: 48%; display: inline-block">
@@ -222,6 +205,23 @@
     function myFunction() {
       var popup = document.getElementById("declinePopup");
       popup.classList.toggle("show");
+    }
+    
+    function postpone(ETA, id)
+    {
+      console.log("Hleoo");
+      const date = new Date(ETA);
+      date.setDate(date.getDate() + 1);
+      const isoString = date.toISOString();
+      
+      fetch('/postpone-cargo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id:id, ETA:isoString})
+        });
+      
     }
     </script>
     
