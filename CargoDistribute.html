@@ -58,6 +58,7 @@
   <script>
     /**/
     function addItem(cargo) {
+      const id = parseInt(cargo.id);
       const li = document.createElement("li");
       
       //span for all li content
@@ -101,12 +102,31 @@
       const deliverButton = document.createElement("button");
       deliverButton.className = "acceptButton";
       deliverButton.textContent = "Teslim Edildi";
-      deliverButton.onclick = () => li.remove();
+      deliverButton.onclick = () => {  
+        console.log(id);
+        fetch('/delivered-cargo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id:id })
+        });
+        li.remove();
+      }
       const notDeliverButton = document.createElement("button");
       notDeliverButton.className = "declineButton";
       notDeliverButton.textContent = "Teslim Edilemedi";
-      notDeliverButton.onclick = () => li.remove();
-      
+      notDeliverButton.onclick = () => {  
+        console.log(id);
+        fetch('/notDelivered-cargo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id:id })
+        });
+        li.remove();
+      }
       buttons.appendChild(deliverButton);
       buttons.appendChild(notDeliverButton);
       
