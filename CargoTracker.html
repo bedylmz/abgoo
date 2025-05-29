@@ -149,11 +149,18 @@
             }
             const date =  cargo.ETA.slice(0,10);
             const date2 = cargo.createdAt.slice(0,10);
+          
+            var status;
+            if (cargo.status === 'pending') status = "Gönderildi";
+            else if (cargo.status === 'deliver') status = "Taşımada";
+            else if (cargo.status === 'delivered') status = "Teslim Edildi";
+            else status = "Taşınırken Kayboldu";
+          
             newMain.innerHTML =
               `
               <div class="card" style="min-width: 800px;">
                   <h2 class="simpleHeader">Kargo Durum</h2>
-                  <div class="cardflex" style="display: inline-block"><b>#️⃣Kargo Numarası:</b><br><br>${cargo.id}</div>
+                  <div class="cardflex" style="display: inline-block"><b>#️⃣Kargo Kodu:</b><br><br>${cargo.id}</div>
                   <div class="cardflex" style="display: inline-block"><b>📅Tahmini Teslimat:</b><br><br>${date}</div>
                   <div class="cardflex" style="display: inline-block"><b>👤Alıcı Adı:</b><br><br>${cargo.receiverName}</div>
                   <div class="cardflex" style="display: inline-block"><b>📅Gönderi Çıkış Tarihi:</b><br><br>${date2}</div>
@@ -163,7 +170,7 @@
                       <b style="font-size: x-large">ℹ️Gönderi Detayları</b><br><br>
                       <div style="text-align: left; padding: 2rem;">
                           <b>Kargo Durumu:</b><br>
-                          ${cargo.status}
+                          ${status}
                           <br><br>
                           <b>Alıcı Adresi:</b><br>
                           ${cargo.address}
@@ -178,20 +185,24 @@
                           ${cargo.customerName}
                           <br><br>
                           <b>Kargo Boyutu & Ağırlığı:</b><br>
-                          ${cargo.volume} cm3, ${cargo.mass} kg,
+                          ${cargo.volume} cm3, ${cargo.mass} kg
 
                       </div>
                   </div>
 
-                  <button type="button" onClick="postpone('${cargo.ETA}', ${cargo.id})" class="primaryButton" style="width: 48%; display: inline-block">
+                  <button type="button" onClick="postpone('${cargo.ETA}', ${cargo.id}, '${cargo.status}')" class="popup primaryButton" style="width: 48%; display: inline-block">
                       Teslimatı 1 Gün Ertele
+                      <span>
+                          <span class="popupcontent" id="acceptPopup" style="text-align: center">Erteleme Onaylandı.</span>
+                          <span class="popupcontent" id="declinePopup" style="text-align: center; background-color: var(--error);">Gönderinin ertelenmesi için geçerli şartlar sağlanamadı.</span>
+                      </span>
                   </button>
 
-                  <button type="button" onclick="myFunction()" class="popup primaryButton" style="width: 48%; display: inline-block">
+                  <button type="button" onclick="myFunction('${cargo.status}')" class="popup primaryButton" style="width: 48%; display: inline-block">
                       İade Oluştur
                       <span>
-                          <span class="popupcontent" id="acceptPopup" style="text-align: center">İade Onaylandı.<br>Kargo Numarasını İade Kodu olarak kullanabilirsiniz.</span>
-                          <span class="popupcontent" id="declinePopup" style="text-align: center; background-color: var(--error);">İadeniz Oluşturulamadı Lütfen Şartları Sağladığınızdan Emin Olun.</span>
+                          <span class="popupcontent" id="acceptPopupReturn" style="text-align: center">İade Onaylandı.<br>Kargo Numarasını İade Kodu olarak kullanabilirsiniz.</span>
+                          <span class="popupcontent" id="declinePopupReturn" style="text-align: center; background-color: var(--error);">İadeniz Oluşturulamadı Lütfen Şartları Sağladığınızdan Emin Olun.</span>
                       </span>
                   </button>
               </div>
@@ -202,25 +213,46 @@
       }
     }
     
-    function myFunction() {
-      var popup = document.getElementById("declinePopup");
-      popup.classList.toggle("show");
+    function myFunction(status) 
+    {
+      if (status === 'delivered')
+      {
+        var popup = document.getElementById("acceptPopupReturn");
+        popup.classList.toggle("show");
+      }
+      else
+      {
+        var popup = document.getElementById("declinePopupReturn");
+        popup.classList.toggle("show");
+      }
     }
     
-    function postpone(ETA, id)
+    function postpone(ETA, id, status)
     {
       console.log("Hleoo");
-      const date = new Date(ETA);
-      date.setDate(date.getDate() + 1);
-      const isoString = date.toISOString();
-      
-      fetch('/postpone-cargo', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id:id, ETA:isoString})
-        });
+      if (status === 'pending')
+      {
+        const date = new Date(ETA);
+        date.setDate(date.getDate() + 1);
+        const isoString = date.toISOString();
+
+        fetch('/postpone-cargo', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id:id, ETA:isoString})
+          });
+
+        var popup = document.getElementById("acceptPopup");
+        popup.classList.toggle("show");
+      }
+      else
+      {
+        var popup = document.getElementById("declinePopup");
+        popup.classList.toggle("show");
+      }
+     
       
     }
     </script>

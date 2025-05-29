@@ -787,30 +787,28 @@
           data.forEach(staff => {
             const li = document.createElement("li");
             li.className = "staff-item manager";
+              // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
+              let branchInfo = "";
+              if (!branchId) {
+                branchInfo = `<div><small>${branchId}</small></div>`;
+              }
+              var position;
+              if(staff.authLevel === 2) position = "Şube Müdürü";
+              else if(staff.authLevel === 3) position = "Genel Müdür";
 
-            // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
-            let branchInfo = "";
-            if (!branchId) {
-              branchInfo = `<div><small>${branchId}</small></div>`;
-            }
+              li.innerHTML = `
+                <div>
+                  <strong>${staff.name}</strong>
+                  <div class="staff-position">${position}</div>
+                  ${branchInfo}
+                </div>
+                <div>
+                  <div>${staff.phone}</div>
+                </div>
+              `;
+              staffList.appendChild(li);
+            });
 
-            // authLevel'a göre pozisyon göster
-            let position = "Şube Müdürü";  // varsayılan
-            if (staff.authLevel === 3) {
-              position = "Genel Müdür";
-            }
-
-            li.innerHTML = `
-            <div>
-            <strong>${staff.name}</strong>
-            <div class="staff-position">${position}</div>
-            ${branchInfo}
-      </div>
-      <div>
-      <div>${staff.phone}</div>
-      </div>
-      `;
-            staffList.appendChild(li);
           });
         });
       }
