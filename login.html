@@ -777,18 +777,16 @@
           });
       
         //carries
+        //managers
         fetch(QUERY3)
           .then(res => res.json())
-          .then(data => 
-          {
-            if (data.length === 0) {
-              return;
-            }  
-            data.forEach(staff => {
-              const li = document.createElement("li");
-              //li.className = staff.isManager ? "staff-item manager" : "staff-item";
-              li.className = "staff-item manager";
-
+          .then(data => {
+          if (data.length === 0) {
+            return;
+          }
+          data.forEach(staff => {
+            const li = document.createElement("li");
+            li.className = "staff-item manager";
               // Şube bilgisini ekle (eğer tüm personel görüntüleniyorsa)
               let branchInfo = "";
               if (!branchId) {
@@ -810,8 +808,10 @@
               `;
               staffList.appendChild(li);
             });
+
           });
-    }
+        });
+      }
 
     // Sekme görünürlüğünü yetki seviyesine göre ayarla
     function setTabVisibility(authLevel) {
