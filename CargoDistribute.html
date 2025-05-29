@@ -57,6 +57,8 @@
 
   <script>
     /**/
+    
+    var type;
     function addItem(cargo) {
       const id = parseInt(cargo.id);
       const li = document.createElement("li");
@@ -98,13 +100,17 @@
       //spans for delivering buttons
       const buttons = document.createElement("span");
       
+      var deliveringType;
+      if(type === 1) deliveringType = '/delivered-cargo';
+      else deliveringType = '/trasit-cargo';
+      
       //button for delivering
       const deliverButton = document.createElement("button");
       deliverButton.className = "acceptButton";
       deliverButton.textContent = "Teslim Edildi";
       deliverButton.onclick = () => {  
         console.log(id);
-        fetch('/delivered-cargo', {
+        fetch(deliveringType, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -219,6 +225,8 @@
               return;
             }
             const worker = data[0];
+            if(worker.workPlace > 10) type = 0;
+            else type = 1;
             // Giriş başarılı
             resultBox.className = "result success";
             resultBox.style.display = "block";

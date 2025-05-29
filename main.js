@@ -86,7 +86,7 @@ CREATE TABLE cargos (
 
   rendezvous VARCHAR(255),
 
-  status ENUM('pending', 'transit', 'deliver', 'delivered') DEFAULT 'pending',
+  status ENUM('pending', 'deliver', 'delivered') DEFAULT 'pending',
   
   deliverymanId INT,
   FOREIGN KEY (deliverymanId) REFERENCES deliverymen(id),
@@ -280,8 +280,8 @@ app.get('/api/cargos/filteredDelivery', (req, res) => {
     return res.status(400).json({ error: 'Missing deliverymanId parameter' });
   }
 
-  const sql = 'SELECT * FROM cargos WHERE deliverymanId = ?';
-  const params = [deliverymanId];
+  const sql = 'SELECT * FROM cargos WHERE deliverymanId = ? AND status = ?';
+  const params = [deliverymanId, 'pending'];
 
   db.query(sql, params, (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
@@ -373,8 +373,8 @@ app.get('/api/cargos/filteredCarrier', (req, res) => {
     return res.status(400).json({ error: 'Missing carrierID parameter' });
   }
 
-  const sql = 'SELECT * FROM cargos WHERE carrierID = ?';
-  const params = [carrierID];
+  const sql = 'SELECT * FROM cargos WHERE carrierID = ? AND status = ?';
+  const params = [carrierID, 'pending'];
 
   db.query(sql, params, (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
@@ -425,7 +425,7 @@ app.post('/add-cargo',
     // Calculate ETA (example: 3 days from now)
     const date = new Date();
     date.setDate(date.getDate() + 3);
-    const ETA = originalDate.toISOString(); // "2025-05-09T12:45:00.000Z"
+    const ETA = date.toISOString(); // "2025-05-09T12:45:00.000Z"
 
 
     // Step 1: Get deliverymanId
@@ -500,8 +500,20 @@ app.post('/add-cargo',
 app.post('/delivered-cargo', 
   (req, res) => 
   {
-  const sql = 'UPDATE cargos SET status = ?, deliverymanId = ? WHERE id = ?';
-  db.query(sql, ['delivered', 0, req.body.id], (err, result) => {
+  const sql = 'UPDATE cargos SET status = ? WHERE id = ?';
+  db.query(sql, ['delivered', req.body.id], (err, result) => {
+    if (err) throw err;
+    console.log('Row updated!: ' + req.body.id);
+    //res.send(returnPopup);
+  });
+});
+
+/*trasit cargo infos*/ 
+app.post('/trasit-cargo', 
+  (req, res) => 
+  {
+  const sql = 'UPDATE cargos SET status = ? WHERE id = ?';
+  db.query(sql, ['deliver', req.body.id], (err, result) => {
     if (err) throw err;
     console.log('Row updated!: ' + req.body.id);
     //res.send(returnPopup);
@@ -545,7 +557,7 @@ app.post('/postpone-cargo',
 });
 
 
-//show filtered sections
+//show filtered cargos
 app.get('/api/cargos/filtered', (req, res) => {
   let sql = 'SELECT * FROM cargos';
   const params = [];

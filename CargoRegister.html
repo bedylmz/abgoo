@@ -50,17 +50,17 @@
       
       <div>
         <label class="simpleLabel">Adı Soyadı</label>
-        <input type="text" name="customerName" class="primaryInput">
+        <input type="text" required name="customerName" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Kimlik No</label>
-        <input type="number" name="customerID" class="primaryInput">
+        <input type="number" required name="customerID" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Telefon Numarası</label>
-        <input type="number" name="customerPhone" class="primaryInput">
+        <input type="number" required name="customerPhone" class="primaryInput">
       </div>
       
       <div>
@@ -69,12 +69,12 @@
       
       <div>
         <label class="simpleLabel">Adı Soyadı</label>
-        <input type="text" name="receiverName" class="primaryInput">
+        <input type="text" required name="receiverName" class="primaryInput">
       </div>
       
       <div>
         <label class="simpleLabel">Telefon Numarası</label>
-        <input type="number" name="receiverPhone" class="primaryInput">
+        <input type="number" required name="receiverPhone" class="primaryInput">
       </div>
       
       <div>
@@ -82,13 +82,13 @@
       </div>
   
       <div>
-        <label class="simpleLabel">Kütlesi</label>
-        <input type="number" name="mass" required min="0" class="primaryInput">
+        <label class="simpleLabel">Kütlesi (gr)</label>
+        <input id="mass" type="number" name="mass" required min="0" class="primaryInput">
       </div>
 
       <div>
-        <label class="simpleLabel">Hacim</label>
-        <input type="number" name="volume" required min="0" class="primaryInput">
+        <label class="simpleLabel">Hacim (cm3)</label>
+        <input id="volume" type="number" name="volume" required min="0" class="primaryInput">
       </div>
 
       <div>
@@ -96,7 +96,7 @@
       </div>
       <div>
         <label class="simpleLabel">İl</label>
-        <select name="customerAddress1" required class="selectRoundedBlack">
+        <select id="from" name="customerAddress1" required class="selectRoundedBlack">
           <option value="01">Adana</option>
           <option value="02">Ankara</option>
           <option value="03">Antalya</option>
@@ -112,7 +112,7 @@
       </div>
       <div>
         <label class="simpleLabel">İl</label>
-        <select name="receiverAddress1" required class="selectRoundedBlack">
+        <select id="to" name="receiverAddress1" required class="selectRoundedBlack">
           <option value="01">Adana</option>
           <option value="02">Ankara</option>
           <option value="03">Antalya</option>
@@ -124,7 +124,7 @@
       </div>
       <div>
         <label class="simpleLabel">Açık Adres</label>
-        <input type="text" name="receiverAddress0" class="primaryInput">
+        <input type="text" required name="receiverAddress0" class="primaryInput">
       </div>    
     
       <div>
@@ -150,7 +150,16 @@
         
     document.getElementById("calculateButton").addEventListener("click", 
     function() {
-      console.log("Registered Site:");
+      var mass = document.getElementById("mass").value;
+      var volume = document.getElementById("volume").value;
+      var from = document.getElementById("from").value;
+      var to = document.getElementById("to").value;
+      
+      var price = mass * 0.7 + volume * 2.2 + Math.abs(from - to) * 7;
+      
+      document.getElementById("calculatedPrice").textContent = price + " TL";
+      
+      console.log("Registered Site:" +price + " TL");
     });
     /*
     const selectElement = document.querySelector('select[name="location11"]');

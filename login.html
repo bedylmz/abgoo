@@ -794,11 +794,14 @@
               if (!branchId) {
                 branchInfo = `<div><small>${branchId}</small></div>`;
               }
+              var position;
+              if(staff.authLevel === 2) position = "Şube Müdürü";
+              else if(staff.authLevel === 3) position = "Genel Müdür";
 
               li.innerHTML = `
                 <div>
                   <strong>${staff.name}</strong>
-                  <div class="staff-position">Şube Müdürü</div>
+                  <div class="staff-position">${position}</div>
                   ${branchInfo}
                 </div>
                 <div>
